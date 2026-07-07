@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+
+        <!-- Head -->
+        <head th:fragment="head">
+            <title>Atalaya</title>
+            <meta charset="UTF-8"/>
+
+            <!-- Bootstrap -->
+            <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+            <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+
+            <!-- Scripts -->
+            <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+            <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        </head>
+
+        <!-- Header -->
+        <header th:fragment="header" class="bg-dark text-white">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container">
+
+                    <a class="navbar-brand" th:href="@{/producto/}">ATALAYA</a>
+
+                    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="menu">
+                        <ul class="navbar-nav me-auto">
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/producto/}">Inicio</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/producto/listado}">Productos</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/categoria/listado}">Categorías</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <section class="bg-success p-2">
+                <div class="container">
+                    <h2>Sistema Atalaya</h2>
+                </div>
+            </section>
+        </header>
+
+        <!-- Footer -->
+        <footer th:fragment="footer" class="bg-dark text-white text-center p-3 mt-4">
+            <p>© 2026 Atalaya</p>
+        </footer>
+
+        <!-- Toast Mensaje -->
+        <section th:fragment="mostrarToast">
+            <div class="position-fixed top-50 start-50 translate-middle">
+
+                <div th:if="${error}" class="alert alert-danger">
+                    [[${error}]]
+                </div>
+
+                <div th:if="${todoOk}" class="alert alert-success">
+                    [[${todoOk}]]
+                </div>
+
+            </div>
+        </section>
+
+    </body>
+</html>
