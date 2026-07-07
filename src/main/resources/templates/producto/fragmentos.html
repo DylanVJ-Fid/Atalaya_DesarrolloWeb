@@ -149,15 +149,50 @@
                   enctype="multipart/form-data">
 
                 <input type="hidden" th:field="*{idProducto}"/>
+                <input type="hidden" th:field="*{rutaImagen}"/>
+
+                <div class="mb-3">
+                    <label>Categoría</label>
+                    <select th:field="*{categoria.idCategoria}" class="form-select">
+                        <option th:each="c : ${categorias}"
+                                th:value="${c.idCategoria}"
+                                th:text="${c.descripcion}">
+                        </option>
+                    </select>
+                </div>
 
                 <div class="mb-3">
                     <label>Descripción</label>
-                    <input type="text" th:field="*{descripcion}" class="form-control"/>
+                    <input type="text" th:field="*{descripcion}" class="form-control" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label>Detalle</label>
+                    <textarea th:field="*{detalle}" class="form-control"></textarea>
                 </div>
 
                 <div class="mb-3">
                     <label>Precio</label>
-                    <input type="number" th:field="*{precio}" class="form-control"/>
+                    <input type="number" th:field="*{precio}" class="form-control" min="0" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label>Existencias</label>
+                    <input type="number" th:field="*{existencias}" class="form-control" min="0" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label>Activo</label>
+                    <input type="checkbox" th:field="*{activo}" class="form-check-input"/>
+                </div>
+
+                <div class="mb-3">
+                    <label>Imagen</label>
+                    <input type="file" name="imagenFile" class="form-control"/>
+                    <img th:if="${producto.rutaImagen != null}"
+                         th:src="@{${producto.rutaImagen}}"
+                         alt="Imagen del producto"
+                         height="200"/>
                 </div>
 
                 <button type="submit" class="btn btn-success">Guardar</button>
