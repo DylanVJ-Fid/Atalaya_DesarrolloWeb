@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{general/fragmentos :: head}"></head>
+
+<body class="bg-light">
+
+<header th:replace="~{general/fragmentos :: header}"></header>
+
+<div class="container mt-4 mb-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-lg-5 border-end">
+
+                    <h2>Resumen de compra</h2>
+
+                    <p class="text-muted">
+                        Verifica la información del producto antes de confirmar la compra.
+                    </p>
+
+                    <table class="table table-striped align-middle">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:if="${producto != null}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img th:src="@{${producto.rutaImagen}}"
+                                         width="80"
+                                         class="rounded me-3"
+                                         alt="Producto">
+
+                                    <span th:text="${producto.descripcion}"></span>
+                                </div>
+                            </td>
+
+                            <td>1</td>
+
+                            <td th:text="'₡ ' + ${producto.precio}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <strong th:text="'₡ ' + ${subtotal}">₡0</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span>IVA (13%)</span>
+                        <strong th:text="'₡ ' + ${iva}">₡0</strong>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+                        <h4>Total</h4>
+                        <h4 th:text="'₡ ' + ${total}">₡0</h4>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                        Compra inmediata
+                    </div>
+
+                </div>
+
+                <div class="col-lg-7">
+
+                    <h2>Información de compra</h2>
+
+                    <p class="text-muted">
+                        Completa la siguiente información para finalizar tu pedido.
+                    </p>
+
+                    <form th:action="@{/factura/guardar}" method="post">
+
+                        <input type="hidden"
+                               name="idProducto"
+                               th:value="${producto.idProducto}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre en la factura</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Número de tarjeta</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="1234 5678 9012 3456"
+                                   maxlength="19"
+                                   required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha de vencimiento</label>
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="MM/AA"
+                                       maxlength="5"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">CVV</label>
+                                <input type="password"
+                                       class="form-control"
+                                       maxlength="3"
+                                       placeholder="123"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Ciudad</label>
+                                <input type="text" class="form-control">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Provincia</label>
+                                <input type="text" class="form-control">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Código Postal</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="text-end mt-4">
+                            <a th:href="@{/producto}" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-credit-card"></i>
+                                Confirmar Compra
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+</body>
+</html>
