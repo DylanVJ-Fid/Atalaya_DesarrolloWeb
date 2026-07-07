@@ -22,7 +22,7 @@ public class IndexController {
         this.categoriaService = categoriaService;
     }
 
-    @GetMapping("/")
+    @GetMapping({"", "/"})
     public String cargarIndex(Model model) {
         var productos = productoService.listar();
         model.addAttribute("productos", productos);

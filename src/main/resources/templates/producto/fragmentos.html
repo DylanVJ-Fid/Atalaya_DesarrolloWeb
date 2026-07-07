@@ -127,6 +127,19 @@
                                     <a th:href="@{/producto/modifica/}+${p.idProducto}"
                                        class="btn btn-warning">Editar</a>
 
+                                    <a th:href="@{/producto/detalle/}+${p.idProducto}"
+                                       class="btn btn-info text-white">Detalle</a>
+
+                                    <form th:if="${p.activo == true and p.existencias > 0}"
+                                          th:action="@{/carrito/agregar/}+${p.idProducto}"
+                                          method="post"
+                                          style="display:inline;">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                            Agregar
+                                        </button>
+                                    </form>
+
                                     <form th:action="@{/producto/eliminar}" method="post" style="display:inline;">
                                         <input type="hidden" name="id" th:value="${p.idProducto}"/>
                                         <button type="submit" class="btn btn-danger">Eliminar</button>

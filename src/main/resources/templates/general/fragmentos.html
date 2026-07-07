@@ -21,7 +21,7 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div class="container">
 
-                    <a class="navbar-brand" th:href="@{/producto/}">ATALAYA</a>
+                    <a class="navbar-brand" th:href="@{/producto}">ATALAYA</a>
 
                     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
                         <span class="navbar-toggler-icon"></span>
@@ -31,7 +31,7 @@
                         <ul class="navbar-nav me-auto">
 
                             <li class="nav-item">
-                                <a class="nav-link" th:href="@{/producto/}">Inicio</a>
+                                <a class="nav-link" th:href="@{/producto}">Inicio</a>
                             </li>
 
                             <li class="nav-item">
@@ -40,6 +40,14 @@
 
                             <li class="nav-item">
                                 <a class="nav-link" th:href="@{/categoria/listado}">Categorías</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/carrito/listado}">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    Carrito
+                                    <span class="badge bg-success" th:text="${carritoCantidad}">0</span>
+                                </a>
                             </li>
 
                         </ul>

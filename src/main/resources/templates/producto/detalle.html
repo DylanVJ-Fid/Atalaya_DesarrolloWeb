@@ -11,11 +11,23 @@
 
             <h2>Detalle del Producto</h2>
 
-            <p>Nombre: <span th:text="${producto.nombre}"></span></p>
+            <p>Nombre: <span th:text="${producto.descripcion}"></span></p>
+            <p>Detalle: <span th:text="${producto.detalle}"></span></p>
             <p>Precio: <span th:text="${producto.precio}"></span></p>
             <p>Categoría: <span th:text="${producto.categoria.descripcion}"></span></p>
+            <p>Existencias: <span th:text="${producto.existencias}"></span></p>
 
             <a class="btn btn-primary" th:href="@{/producto/listado}">Volver</a>
+
+            <form th:if="${producto.activo == true and producto.existencias > 0}"
+                  th:action="@{/carrito/agregar/}+${producto.idProducto}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    Agregar al carrito
+                </button>
+            </form>
 
         </div>
 

@@ -28,6 +28,24 @@ CREATE TABLE producto (
     FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
 );
 
+-- TABLA: CARRITO
+CREATE TABLE carrito (
+    id_carrito INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_creacion DATETIME,
+    activo BOOLEAN
+);
+
+-- TABLA: DETALLE_CARRITO
+CREATE TABLE detalle_carrito (
+    id_detalle_carrito INT AUTO_INCREMENT PRIMARY KEY,
+    id_carrito INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL,
+    FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito),
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
+    UNIQUE KEY uk_carrito_producto (id_carrito, id_producto)
+);
+
 -- TABLA: USUARIO
 CREATE TABLE usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -130,11 +148,19 @@ INSERT INTO usuario_rol (id_usuario, id_rol) VALUES
 INSERT INTO ruta (ruta, requiere_rol) VALUES 
 ('/',false),
 ('/index',false),
+('/producto',false),
 ('/producto/listado',false),
 ('/producto/nuevo',true),
 ('/producto/guardar',true),
 ('/producto/eliminar/**',true),
 ('/producto/modificar/**',true),
+('/carrito/listado',false),
+('/carrito/agregar/**',false),
+('/carrito/actualizar',false),
+('/carrito/sumar/**',false),
+('/carrito/restar/**',false),
+('/carrito/eliminar/**',false),
+('/carrito/vaciar',false),
 ('/css/**',false),
 ('/js/**',false),
 ('/webjars/**',false);
