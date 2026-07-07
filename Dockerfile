@@ -22,10 +22,10 @@ USER spring:spring
 
 # Copiamos el JAR desde la etapa de compilación
 # El nombre 'app.jar' es un estándar para facilitar el despliegue
-COPY --from=build /app/target/app.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
-# Exponemos el puerto definido en tu application.properties (80)
-EXPOSE 80
+# Render asigna el puerto automáticamente
+EXPOSE 8080
 
-# Parámetros de optimización de memoria para contenedores
-ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]
+# Inicia la aplicación usando el puerto asignado por Render
+ENTRYPOINT ["java","-XX:+UseContainerSupport","-XX:MaxRAMPercentage=75.0","-Dserver.port=${PORT}","-jar","app.jar"]
