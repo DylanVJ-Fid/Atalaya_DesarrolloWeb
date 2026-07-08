@@ -28,4 +28,4 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Inicia la aplicación usando el puerto asignado por Render
-ENTRYPOINT ["java","-XX:+UseContainerSupport","-XX:MaxRAMPercentage=75.0","-Dserver.port=${PORT}","-jar","app.jar"]
+ENTRYPOINT ["sh","-c","java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dserver.port=${PORT} -jar app.jar"]
