@@ -4,6 +4,125 @@ Atalaya es una aplicacion web de comercio electronico desarrollada con Spring Bo
 
 Este README es preliminar y resume el estado actual del avance del proyecto.
 
+## Historias de usuario por persona
+
+### Persona 1 - Autenticacion y usuarios
+
+Responsable de:
+
+- Registro de usuario (HU01).
+- Login (HU02).
+- Roles (HU19).
+- CRUD basico de usuarios.
+
+Debe hacer:
+
+- `Usuario` y `Rol` como entidades.
+- `UsuarioRepository`.
+- `UsuarioService`.
+- `UsuarioController`.
+- Vistas de login y registro.
+
+Estado actual:
+
+- El proyecto ya cuenta con entidades `Usuario` y `Rol`.
+- Existe repositorio, servicio y controlador para usuarios.
+- Existen vistas de login, registro, listado y modificacion de usuarios.
+- El login es basico y valida correo/contrasena contra la base de datos.
+
+Importancia:
+
+- Es critico para todo el sistema porque permite identificar usuarios y preparar la proteccion de las secciones administrativas.
+
+### Persona 2 - Productos y categorias
+
+Responsable de:
+
+- Ver productos (HU04).
+- Detalle de producto (HU07).
+- CRUD de productos (HU14, HU15, HU16).
+- Categorias (HU17).
+
+Debe hacer:
+
+- `Producto` y `Categoria` como entidades.
+- CRUD completo de productos.
+- CRUD de categorias.
+- Listado con Bootstrap.
+- Filtros basicos.
+
+Estado actual:
+
+- El proyecto ya cuenta con entidades `Producto` y `Categoria`.
+- Existe listado publico de productos.
+- Existe detalle de producto.
+- Existe CRUD de productos y categorias.
+- Hay filtros por categoria y consulta por rango de precio.
+
+Importancia:
+
+- Es el nucleo visual del sistema porque representa el catalogo que ve el usuario.
+
+### Persona 3 - Carrito de compras
+
+Responsable de:
+
+- Agregar producto al carrito (HU08).
+- Modificar cantidad (HU09).
+- Eliminar producto del carrito (HU10).
+
+Debe hacer:
+
+- `Carrito`.
+- `DetalleCarrito`.
+- Logica para sumar y restar productos.
+- Vista del carrito.
+- Calculo del total.
+
+Estado actual:
+
+- El proyecto ya cuenta con `Carrito` y `DetalleCarrito`.
+- Se pueden agregar productos al carrito.
+- Se pueden sumar, restar, actualizar y eliminar productos.
+- Se calcula el total del carrito.
+- Existe vista del carrito.
+
+Importancia:
+
+- Este modulo tiene logica importante porque conecta el catalogo con el proceso de compra.
+
+### Persona 4 - Pedidos y pagos
+
+Responsable de:
+
+- Confirmar compra (HU11).
+- Historial de pedidos (HU12).
+- Pago basico opcional.
+
+Debe hacer:
+
+- Pedido o factura.
+- Detalle del pedido o venta.
+- Pago basico.
+- Generar pedido desde carrito.
+- Guardar en base de datos.
+- Mostrar historial.
+
+Estado actual:
+
+- El proyecto usa `Factura` para representar pedidos.
+- El proyecto usa `Venta` para representar el detalle de productos comprados.
+- Existe checkout individual.
+- Existe checkout desde carrito.
+- Se guarda la factura en base de datos.
+- Se guarda el detalle de ventas por factura.
+- Existe historial de pedidos con detalle.
+- El pago es basico y funciona como formulario visual.
+
+Importancia:
+
+- Este modulo conecta todo el sistema: productos, carrito, compras e historial.
+
 ## Tecnologias
 
 - Java 21
