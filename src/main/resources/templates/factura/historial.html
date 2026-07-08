@@ -86,6 +86,30 @@
                                                         <span class="badge bg-success"
                                                               th:text="${f.estado}"></span></p>
 
+                                                    <div th:if="${f.ventas != null and !f.ventas.empty}">
+                                                        <h6>Productos</h6>
+
+                                                        <table class="table table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Producto</th>
+                                                                    <th>Cantidad</th>
+                                                                    <th>Precio</th>
+                                                                    <th>Subtotal</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                <tr th:each="v : ${f.ventas}">
+                                                                    <td th:text="${v.producto != null ? v.producto.descripcion : 'Producto'}"></td>
+                                                                    <td th:text="${v.cantidad}"></td>
+                                                                    <td th:text="'₡ ' + ${v.precioHistorico}"></td>
+                                                                    <td th:text="'₡ ' + ${v.subtotal}"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
                                                 </div>
 
                                                 <div class="modal-footer">
