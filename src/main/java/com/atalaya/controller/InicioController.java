@@ -8,6 +8,6 @@ public class InicioController {
 
     @GetMapping("/")
     public String inicio() {
-        return "redirect:/producto";
+        return "redirect:/usuario/login";
     }
 }

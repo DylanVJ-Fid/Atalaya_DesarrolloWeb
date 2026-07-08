@@ -2,49 +2,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{general/fragmentos :: head}"></head>
+    <head th:replace="~{general/fragmentos :: head}"></head>
 
-<body>
+    <body>
 
-    <header th:replace="~{general/fragmentos :: header}"></header>
+        <section class="bg-success p-2 text-white">
+            <div class="container">
+                <h2>Sistema Atalaya</h2>
+            </div>
+        </section>
 
-    <div class="container mt-5" style="max-width:450px;">
+        <div class="container mt-5" style="max-width:450px;">
 
-        <h2 class="text-center mb-4">Iniciar Sesión</h2>
+            <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
-        <!-- Mensaje de error -->
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <span th:text="${error}"></span>
+            <!-- Mensaje de error -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/usuario/validar}" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input type="email"
+                           name="correo"
+                           class="form-control"
+                           required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           required/>
+                </div>
+
+                <button class="btn btn-primary w-100"
+                        type="submit">
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <div class="text-center mt-3">
+                <p>¿No tienes una cuenta?</p>
+                <a th:href="@{/usuario/registro}" class="btn btn-outline-success w-100">
+                    Registrarse
+                </a>
+            </div>
+
         </div>
 
-        <form th:action="@{/usuario/validar}" method="post">
 
-            <div class="mb-3">
-                <label class="form-label">Correo</label>
-                <input type="email"
-                       name="correo"
-                       class="form-control"
-                       required/>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <input type="password"
-                       name="password"
-                       class="form-control"
-                       required/>
-            </div>
-
-            <button class="btn btn-primary w-100"
-                    type="submit">
-                Iniciar sesión
-            </button>
-
-        </form>
-
-    </div>
-
-    <footer th:replace="~{general/fragmentos :: footer}"></footer>
-
-</body>
+    </body>
 </html>

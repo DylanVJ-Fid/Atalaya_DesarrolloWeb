@@ -6,6 +6,7 @@ import com.atalaya.service.UsuarioService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/usuario")
@@ -27,11 +28,16 @@ public class UsuarioController {
     @PostMapping("/validar")
     public String validarLogin(@RequestParam String correo,
             @RequestParam String password,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
-        boolean valido = usuarioService.validarLogin(correo, password);
+        Usuario usuario = usuarioService.buscarPorCorreo(correo);
 
-        if (valido) {
+        if (usuario != null
+                && usuario.getPassword().equals(password)
+                && Boolean.TRUE.equals(usuario.getActivo())) {
+
+            session.setAttribute("usuarioLogueado", usuario);
             return "redirect:/producto/";
         }
 
@@ -53,7 +59,11 @@ public class UsuarioController {
     }
 
     @GetMapping("/listado")
-    public String listado(Model model) {
+    public String listado(Model model, HttpSession session) {
+
+        if (session.getAttribute("usuarioLogueado") == null) {
+            return "redirect:/usuario/login";
+        }
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("usuarios", usuarioService.listar());
         model.addAttribute("roles", rolService.listar());
@@ -61,7 +71,12 @@ public class UsuarioController {
     }
 
     @GetMapping("/modificar/{idUsuario}")
-    public String modificar(@PathVariable Integer idUsuario, Model model) {
+    public String modificar(@PathVariable Integer idUsuario, Model model, HttpSession session) {
+
+        if (session.getAttribute("usuarioLogueado") == null) {
+            return "redirect:/usuario/login";
+        }
+
         Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null);
 
         if (usuario == null) {
@@ -73,8 +88,19 @@ public class UsuarioController {
         return "usuario/modificar";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/usuario/login";
+    }
+
     @GetMapping("/eliminar/{idUsuario}")
-    public String eliminar(@PathVariable Integer idUsuario) {
+    public String eliminar(@PathVariable Integer idUsuario, HttpSession session) {
+
+        if (session.getAttribute("usuarioLogueado") == null) {
+            return "redirect:/usuario/login";
+        }
+
         usuarioService.eliminar(idUsuario);
         return "redirect:/usuario/listado";
     }
