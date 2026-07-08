@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/producto")
@@ -24,7 +25,11 @@ public class ProductoController {
     @GetMapping("/listado")
     public String listado(@RequestParam(required = false) String descripcion,
             @RequestParam(required = false) Long categoriaId,
-            Model model) {
+            Model model, HttpSession session) {
+
+        if (session.getAttribute("usuarioLogueado") == null) {
+            return "redirect:/usuario/login";
+        }
 
         var productos = productoService.filtrar(descripcion, categoriaId);
 
