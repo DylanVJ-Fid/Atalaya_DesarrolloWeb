@@ -3,76 +3,83 @@
     <body>
 
         <!-- Head -->
-        <head th:fragment="head">
-            <title>Atalaya</title>
-            <meta charset="UTF-8"/>
+    <head th:fragment="head">
+        <title>Atalaya</title>
+        <meta charset="UTF-8"/>
 
-            <!-- Bootstrap -->
-            <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
-            <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <!-- Bootstrap -->
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
 
-            <!-- Scripts -->
-            <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
-            <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-        </head>
+        <!-- CSS de Atalaya -->
+        <link th:href="@{/css/estilos.css}" rel="stylesheet"/>
 
-        <!-- Header -->
-        <header th:fragment="header" class="bg-dark text-white">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container">
+        <!-- Scripts -->
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/js/rutinas.js}"></script>
+    </head>
 
-                    <a class="navbar-brand" th:href="@{/producto/}">ATALAYA</a>
+    <!-- Header -->
+    <header th:fragment="header" class="bg-dark text-white">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
 
-                    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+                <a class="navbar-brand" th:href="@{/producto/}">ATALAYA</a>
 
-                    <div class="collapse navbar-collapse" id="menu">
-                        <ul class="navbar-nav me-auto">
+                <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/producto/}">Inicio</a>
-                            </li>
+                <div class="collapse navbar-collapse justify-content-between" id="menu">
+                    <ul class="navbar-nav">
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/producto/listado}">Productos</a>
-                            </li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/producto/listado}">Productos</a></li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/categoria/listado}">Categorías</a>
-                            </li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/categoria/listado}">Categorías</a></li>
 
-                        </ul>
-                    </div>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/consultas/listado}">Consultas</a></li>
+
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">[[#{plantilla.idioma}]]</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/(lang=es)}">Español</a></li>
+                                <li><a class="dropdown-item" th:href="@{/(lang=en)}">English</a></li>
+                                <li><a class="dropdown-item" th:href="@{/(lang=fr)}">Française</a></li>
+                                <li><a class="dropdown-item" th:href="@{/(lang=pt)}">Portugaise</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
                 </div>
-            </nav>
+            </div>
+        </nav>
 
-            <section class="bg-success p-2">
-                <div class="container">
-                    <h2>Sistema Atalaya</h2>
-                </div>
-            </section>
-        </header>
-
-        <!-- Footer -->
-        <footer th:fragment="footer" class="bg-dark text-white text-center p-3 mt-4">
-            <p>© 2026 Atalaya</p>
-        </footer>
-
-        <!-- Toast Mensaje -->
-        <section th:fragment="mostrarToast">
-            <div class="position-fixed top-50 start-50 translate-middle">
-
-                <div th:if="${error}" class="alert alert-danger">
-                    [[${error}]]
-                </div>
-
-                <div th:if="${todoOk}" class="alert alert-success">
-                    [[${todoOk}]]
-                </div>
-
+        <section class="bg-success p-2 d-print-none">
+            <div class="container">
+                <h2>Sistema Atalaya</h2>
             </div>
         </section>
+    </header>
 
-    </body>
+    <!-- Footer -->
+    <footer th:fragment="footer" class="bg-dark text-white text-center p-3 mt-4">
+        <p>© 2026 Atalaya</p>
+    </footer>
+
+    <!-- Toast Mensaje -->
+    <section th:fragment="mostrarToast">
+        <div class="position-fixed top-50 start-50 translate-middle">
+
+            <div th:if="${error}" class="alert alert-danger">[[${error}]]</div>
+
+            <div th:if="${todoOk}" class="alert alert-success">[[${todoOk}]]</div>
+
+        </div>
+    </section>
+
+</body>
 </html>

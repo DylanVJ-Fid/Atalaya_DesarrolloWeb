@@ -10,9 +10,9 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     public List<Producto> findByActivoTrue();
 
-    public List<Producto> findByDescripcionContainingIgnoreCase(String descripcion);
+    public List<Producto> findByDescripcionContainingIgnoreCaseAndActivoTrue(String descripcion);
 
-    public List<Producto> findByCategoriaIdCategoria(Long categoriaId);
-    
+    public List<Producto> findByCategoriaIdCategoriaAndActivoTrue(Integer categoriaId);
+
     public List<Producto> findByPrecioBetweenOrderByPrecioAsc(double precioInf, double precioSup);
 }

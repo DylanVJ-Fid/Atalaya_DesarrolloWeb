@@ -12,6 +12,12 @@
 
         <!-- Tabla -->
         <section th:replace="~{producto/fragmentos :: listado}"></section>
+        
+         <!-- Confirmación para eliminar -->
+        <section th:replace="~{producto/fragmentos :: confirmarEliminar}"></section>
+
+        <!-- Mensajes -->
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
 
         <footer th:replace="~{general/fragmentos :: footer}"></footer>
     </body>
