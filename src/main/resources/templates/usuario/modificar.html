@@ -8,7 +8,91 @@
 
         <header th:replace="~{general/fragmentos :: header}"></header>
 
-        <section th:replace="~{usuario/fragmentos :: agregar}"></section>
+        <div class="container mt-4">
+
+            <h2>Modificar Usuario</h2>
+
+            <form th:action="@{/usuario/actualizar}"
+                  th:object="${usuario}"
+                  method="post"
+                  class="row g-3">
+
+                <input type="hidden" th:field="*{idUsuario}" />
+
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text"
+                           th:field="*{nombre}"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Correo</label>
+                    <input type="email"
+                           th:field="*{correo}"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Nueva contraseña</label>
+                    <input type="password"
+                           th:field="*{password}"
+                           class="form-control"
+                           placeholder="Dejar vacío para conservar la actual" />
+
+                    <small class="text-muted">
+                        Déjala vacía si no deseas cambiar la contraseña.
+                    </small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Rol</label>
+
+                    <select th:field="*{rol.idRol}"
+                            class="form-select"
+                            required>
+
+                        <option th:each="rol : ${roles}"
+                                th:value="${rol.idRol}"
+                                th:text="${rol.nombre}">
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-check mt-4">
+
+                        <input type="checkbox"
+                               th:field="*{activo}"
+                               class="form-check-input" />
+
+                        <label class="form-check-label">
+                            Usuario activo
+                        </label>
+
+                    </div>
+                </div>
+
+                <div class="col-12">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Guardar cambios
+                    </button>
+
+                    <a th:href="@{/usuario/listado}"
+                       class="btn btn-secondary">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
 
         <footer th:replace="~{general/fragmentos :: footer}"></footer>
 
