@@ -4,16 +4,26 @@ import com.atalaya.domain.Usuario;
 import com.atalaya.repository.UsuarioRepository;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -38,9 +48,20 @@ public class UsuarioService {
 
     @Transactional
     public void guardar(Usuario usuario) {
+
         if (usuario.getActivo() == null) {
             usuario.setActivo(true);
         }
+
+        // Solo encripta si la contraseña aún no está codificada
+        if (usuario.getPassword() != null
+                && !usuario.getPassword().startsWith("$2a$")
+                && !usuario.getPassword().startsWith("$2b$")
+                && !usuario.getPassword().startsWith("$2y$")) {
+
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        }
+
         usuarioRepository.save(usuario);
     }
 
@@ -49,14 +70,30 @@ public class UsuarioService {
         usuarioRepository.deleteById(idUsuario);
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public boolean validarLogin(String correo, String password) {
+    public UserDetails loadUserByUsername(String correo)
+            throws UsernameNotFoundException {
+
         Usuario usuario = usuarioRepository.findByCorreo(correo);
 
         if (usuario == null) {
-            return false;
+            throw new UsernameNotFoundException(
+                    "Usuario no encontrado: " + correo
+            );
         }
 
-        return usuario.getPassword().equals(password) && Boolean.TRUE.equals(usuario.getActivo());
+        if (usuario.getRol() == null) {
+            throw new UsernameNotFoundException(
+                    "El usuario no tiene un rol asignado"
+            );
+        }
+
+        return User.builder()
+                .username(usuario.getCorreo())
+                .password(usuario.getPassword())
+                .roles(usuario.getRol().getNombre())
+                .disabled(!Boolean.TRUE.equals(usuario.getActivo()))
+                .build();
     }
 }

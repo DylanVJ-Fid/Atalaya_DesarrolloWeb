@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/producto")
@@ -24,11 +23,7 @@ public class IndexController {
     }
 
     @GetMapping({"", "/"})
-    public String cargarIndex(Model model, HttpSession session) {
-
-        if (session.getAttribute("usuarioLogueado") == null) {
-            return "redirect:/usuario/login";
-        }
+    public String cargarIndex(Model model) {
 
         var productos = productoService.listar();
         model.addAttribute("productos", productos);
@@ -41,11 +36,7 @@ public class IndexController {
 
     @GetMapping("/consultas/{idCategoria}")
     public String listado(@PathVariable("idCategoria") Integer idCategoria,
-            Model model, HttpSession session) {
-
-        if (session.getAttribute("usuarioLogueado") == null) {
-            return "redirect:/usuario/login";
-        }
+            Model model) {
 
         Optional<Categoria> categoriaOpt = categoriaService.getCategoria(idCategoria);
 

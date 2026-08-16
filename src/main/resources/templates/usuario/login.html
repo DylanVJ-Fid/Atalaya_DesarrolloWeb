@@ -16,27 +16,48 @@
 
             <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
-            <!-- Mensaje de error -->
-            <div th:if="${error}" class="alert alert-danger" role="alert">
-                <span th:text="${error}"></span>
+            <!-- Credenciales incorrectas -->
+            <div th:if="${param.error}"
+                 class="alert alert-danger"
+                 role="alert">
+                Correo o contraseña incorrectos.
             </div>
 
-            <form th:action="@{/usuario/validar}" method="post">
+            <!-- Logout exitoso -->
+            <div th:if="${param.logout}"
+                 class="alert alert-success"
+                 role="alert">
+                Sesión cerrada correctamente.
+            </div>
+
+            <!-- Registro exitoso -->
+            <div th:if="${param.registro}"
+                 class="alert alert-success"
+                 role="alert">
+                Usuario registrado correctamente. Ya puedes iniciar sesión.
+            </div>
+
+            <!-- Spring Security procesa este formulario -->
+            <form th:action="@{/login}" method="post">
 
                 <div class="mb-3">
                     <label class="form-label">Correo</label>
+
                     <input type="email"
                            name="correo"
                            class="form-control"
-                           required/>
+                           placeholder="correo@ejemplo.com"
+                           required
+                           autofocus />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Contraseña</label>
+
                     <input type="password"
                            name="password"
                            class="form-control"
-                           required/>
+                           required />
                 </div>
 
                 <button class="btn btn-primary w-100"
@@ -48,14 +69,14 @@
 
             <div class="text-center mt-3">
                 <p>¿No tienes una cuenta?</p>
-                <a th:href="@{/usuario/registro}" class="btn btn-outline-success w-100">
+
+                <a th:href="@{/usuario/registro}"
+                   class="btn btn-outline-success w-100">
                     Registrarse
                 </a>
             </div>
 
         </div>
-
-
 
     </body>
 </html>
