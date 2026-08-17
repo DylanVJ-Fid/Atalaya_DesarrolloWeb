@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <body>
+
+        <!-- FORMULARIO DE REGISTRO -->
+        <section th:fragment="agregar" class="container mt-4">
+            <h2>Registro de Usuario</h2>
+
+            <div th:if="${error}"
+                 class="alert alert-danger"
+                 role="alert">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/usuario/guardar}"
+                  th:object="${usuario}"
+                  method="post"
+                  class="row g-3">
+
+                <input type="hidden" th:field="*{idUsuario}" />
+
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text"
+                           th:field="*{nombre}"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Correo</label>
+                    <input type="email"
+                           th:field="*{correo}"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password"
+                           th:field="*{password}"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        Registrarse
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+
+        <!-- LISTADO DE USUARIOS -->
+        <section th:fragment="listado" class="container mt-4">
+            <h2>Lista de Usuarios</h2>
+
+            <table class="table table-striped table-bordered mt-3">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="usuario : ${usuarios}">
+
+                        <td th:text="${usuario.nombre}"></td>
+
+                        <td th:text="${usuario.correo}"></td>
+
+                        <td th:text="${usuario.rol != null
+                            ? usuario.rol.nombre
+                            : 'Sin rol'}">
+                        </td>
+
+                        <td th:text="${usuario.activo
+                            ? 'Sí'
+                            : 'No'}">
+                        </td>
+
+                        <td>
+
+                            <a th:href="@{/usuario/modificar/{idUsuario}
+                               (idUsuario=${usuario.idUsuario})}"
+                               class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+
+                            <a th:href="@{/usuario/eliminar/{idUsuario}
+                               (idUsuario=${usuario.idUsuario})}"
+                               class="btn btn-danger btn-sm">
+                                Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </body>
+</html>

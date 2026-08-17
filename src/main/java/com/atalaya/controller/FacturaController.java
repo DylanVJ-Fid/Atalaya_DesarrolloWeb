@@ -57,7 +57,12 @@ public class FacturaController {
 
         model.addAttribute("producto", producto.get());
 
-        return "factura/checkout";
+        BigDecimal subtotal = carritoService.getTotal(idCarrito);
+        cargarTotales(model, subtotal);
+        model.addAttribute("detalles", detalles);
+        model.addAttribute("cantidadProductos", carritoService.getCantidadProductos(idCarrito));
+
+        return "factura/checkout-carrito";
     }
 
     @GetMapping("/checkout-carrito")

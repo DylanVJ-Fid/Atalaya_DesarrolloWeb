@@ -107,7 +107,6 @@
                                 </span>
                             </div>
 
-                            <!-- Botón Agregar -->
                             <form th:if="${p.activo == true and p.existencias > 0}"
                                   th:action="@{/carrito/agregar/}+${p.idProducto}"
                                   method="post">
@@ -117,15 +116,12 @@
                                 </button>
                             </form>
 
-                            <!-- Botón Comprar Ahora -->
                             <a th:if="${p.activo == true and p.existencias > 0}"
                                th:href="@{/factura/checkout/{id}(id=${p.idProducto})}"
                                class="btn btn-primary w-100 mt-2">
                                 <i class="fa-solid fa-credit-card"></i>
                                 Comprar Ahora
-
                             </a>
-
                         </div>
 
                     </div>

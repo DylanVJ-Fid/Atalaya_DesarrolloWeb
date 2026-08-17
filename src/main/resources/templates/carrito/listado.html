@@ -111,12 +111,21 @@
                         </div>
                     </div>
 
+                    <a th:if="${!carritoVacio}"
+                       th:href="@{/factura/checkout-carrito}"
+                       class="btn btn-success w-100 mb-2">
+                        <i class="fa-solid fa-credit-card"></i>
+                        Comprar carrito
+                    </a>
+
                     <a th:href="@{/producto}" class="btn btn-secondary w-100">
                         Seguir comprando
                     </a>
                 </div>
             </div>
         </section>
+
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
 
         <footer th:replace="~{general/fragmentos :: footer}"></footer>
     </body>

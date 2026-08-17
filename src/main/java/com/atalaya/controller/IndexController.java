@@ -24,6 +24,7 @@ public class IndexController {
 
     @GetMapping({"", "/"})
     public String cargarIndex(Model model) {
+
         var productos = productoService.listar();
         model.addAttribute("productos", productos);
 
@@ -34,7 +35,9 @@ public class IndexController {
     }
 
     @GetMapping("/consultas/{idCategoria}")
-    public String listado(@PathVariable("idCategoria") Integer idCategoria, Model model) {
+    public String listado(@PathVariable("idCategoria") Integer idCategoria,
+            Model model) {
+
         Optional<Categoria> categoriaOpt = categoriaService.getCategoria(idCategoria);
 
         if (categoriaOpt.isEmpty()) {
