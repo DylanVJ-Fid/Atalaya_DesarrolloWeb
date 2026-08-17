@@ -16,15 +16,13 @@ public class Venta implements Serializable {
     @Column(name = "id_venta")
     private Long idVenta;
 
-    // Relación pendiente con Factura
-    // @ManyToOne
-    // @JoinColumn(name = "id_factura")
-    // private Factura factura;
+    @ManyToOne
+    @JoinColumn(name = "id_factura")
+    private Factura factura;
 
-    // Relación pendiente con Producto
-    // @ManyToOne
-    // @JoinColumn(name = "id_producto")
-    // private Producto producto;
+    @ManyToOne
+    @JoinColumn(name = "id_producto")
+    private Producto producto;
 
     @Column(precision = 12, scale = 2)
     private BigDecimal precioHistorico;
@@ -35,17 +33,31 @@ public class Venta implements Serializable {
 
     private LocalDateTime fechaModificacion;
 
-    // Constructor vacío
     public Venta() {
     }
 
-    // Getters y Setters
     public Long getIdVenta() {
         return idVenta;
     }
 
     public void setIdVenta(Long idVenta) {
         this.idVenta = idVenta;
+    }
+
+    public Factura getFactura() {
+        return factura;
+    }
+
+    public void setFactura(Factura factura) {
+        this.factura = factura;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public BigDecimal getPrecioHistorico() {
@@ -78,5 +90,17 @@ public class Venta implements Serializable {
 
     public void setFechaModificacion(LocalDateTime fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
+    }
+
+    // Calcula el subtotal de esta venta
+    @Transient
+    public BigDecimal getSubtotal() {
+        if (precioHistorico == null || cantidad == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return precioHistorico.multiply(
+                BigDecimal.valueOf(cantidad)
+        );
     }
 }

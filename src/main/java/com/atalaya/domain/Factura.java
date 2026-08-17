@@ -1,9 +1,18 @@
 package com.atalaya.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "factura")
@@ -15,11 +24,6 @@ public class Factura implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_factura")
     private Long idFactura;
-
-    // Relación pendiente con Usuario
-    // @ManyToOne
-    // @JoinColumn(name = "id_usuario")
-    // private Usuario usuario;
 
     private LocalDateTime fecha;
 
@@ -33,11 +37,27 @@ public class Factura implements Serializable {
 
     private LocalDateTime fechaModificacion;
 
-    // Constructor vacío
+    // Datos de facturación
+    @Column(length = 150)
+    private String nombreFactura;
+
+    @Column(length = 150)
+    private String correo;
+
+    @Column(length = 255)
+    private String direccion;
+
+    @OneToMany(
+            mappedBy = "factura",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Venta> ventas;
+
     public Factura() {
     }
 
-    // Getters y Setters
     public Long getIdFactura() {
         return idFactura;
     }
@@ -84,5 +104,37 @@ public class Factura implements Serializable {
 
     public void setFechaModificacion(LocalDateTime fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
+    }
+
+    public String getNombreFactura() {
+        return nombreFactura;
+    }
+
+    public void setNombreFactura(String nombreFactura) {
+        this.nombreFactura = nombreFactura;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public List<Venta> getVentas() {
+        return ventas;
+    }
+
+    public void setVentas(List<Venta> ventas) {
+        this.ventas = ventas;
     }
 }

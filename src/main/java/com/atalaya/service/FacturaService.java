@@ -1,7 +1,13 @@
 package com.atalaya.service;
 
+import com.atalaya.domain.DetalleCarrito;
 import com.atalaya.domain.Factura;
+import com.atalaya.domain.Producto;
+import com.atalaya.domain.Venta;
 import com.atalaya.repository.FacturaRepository;
+import com.atalaya.repository.VentaRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -11,38 +17,188 @@ import org.springframework.transaction.annotation.Transactional;
 public class FacturaService {
 
     private final FacturaRepository facturaRepository;
+    private final VentaRepository ventaRepository;
+    private final ProductoService productoService;
 
-    public FacturaService(FacturaRepository facturaRepository) {
+    public FacturaService(FacturaRepository facturaRepository,
+            VentaRepository ventaRepository,
+            ProductoService productoService) {
+
         this.facturaRepository = facturaRepository;
+        this.ventaRepository = ventaRepository;
+        this.productoService = productoService;
     }
 
-    // Listar facturas
     @Transactional(readOnly = true)
     public List<Factura> listar() {
         return facturaRepository.findAll();
     }
 
-    // Buscar por ID
     @Transactional(readOnly = true)
     public Optional<Factura> buscarPorId(Long id) {
         return facturaRepository.findById(id);
     }
 
-    // Guardar factura
     @Transactional
-    public void guardar(Factura factura) {
-        facturaRepository.save(factura);
+    public Factura guardar(Factura factura) {
+        return facturaRepository.save(factura);
     }
 
-    // Eliminar una factura
+    @Transactional
+    public Factura comprarProducto(
+            Producto producto,
+            String nombreFactura,
+            String correo,
+            String direccion) {
+
+        validarProductoDisponible(producto, 1);
+
+        Factura factura = crearFactura(
+                producto.getPrecio(),
+                nombreFactura,
+                correo,
+                direccion
+        );
+
+        guardarVenta(factura, producto, 1);
+        descontarExistencias(producto, 1);
+
+        return factura;
+    }
+
+    @Transactional
+    public Factura comprarCarrito(
+            List<DetalleCarrito> detalles,
+            String nombreFactura,
+            String correo,
+            String direccion) {
+
+        if (detalles == null || detalles.isEmpty()) {
+            throw new IllegalArgumentException("El carrito esta vacio");
+        }
+
+        detalles.forEach(detalle
+                -> validarProductoDisponible(
+                        detalle.getProducto(),
+                        detalle.getCantidad()
+                )
+        );
+
+        BigDecimal subtotal = detalles.stream()
+                .map(DetalleCarrito::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Factura factura = crearFactura(
+                subtotal,
+                nombreFactura,
+                correo,
+                direccion
+        );
+
+        for (DetalleCarrito detalle : detalles) {
+
+            Producto producto = detalle.getProducto();
+            Integer cantidad = detalle.getCantidad();
+
+            guardarVenta(factura, producto, cantidad);
+            descontarExistencias(producto, cantidad);
+        }
+
+        return factura;
+    }
+
     @Transactional
     public void eliminar(Long id) {
         facturaRepository.deleteById(id);
     }
 
-    // Limpiar historial completo
     @Transactional
     public void eliminarTodo() {
         facturaRepository.deleteAll();
+    }
+
+    private Factura crearFactura(
+            BigDecimal subtotal,
+            String nombreFactura,
+            String correo,
+            String direccion) {
+
+        BigDecimal iva = subtotal.multiply(new BigDecimal("0.13"));
+        BigDecimal total = subtotal.add(iva);
+        LocalDateTime ahora = LocalDateTime.now();
+
+        Factura factura = new Factura();
+
+        factura.setFecha(ahora);
+        factura.setEstado("Completado");
+        factura.setTotal(total);
+        factura.setFechaCreacion(ahora);
+        factura.setFechaModificacion(ahora);
+
+        // Datos de facturación
+        factura.setNombreFactura(nombreFactura);
+        factura.setCorreo(correo);
+        factura.setDireccion(direccion);
+
+        return facturaRepository.save(factura);
+    }
+
+    private void guardarVenta(
+            Factura factura,
+            Producto producto,
+            Integer cantidad) {
+
+        LocalDateTime ahora = LocalDateTime.now();
+
+        Venta venta = new Venta();
+
+        venta.setFactura(factura);
+        venta.setProducto(producto);
+        venta.setCantidad(cantidad);
+        venta.setPrecioHistorico(producto.getPrecio());
+        venta.setFechaCreacion(ahora);
+        venta.setFechaModificacion(ahora);
+
+        ventaRepository.save(venta);
+    }
+
+    private void descontarExistencias(
+            Producto producto,
+            Integer cantidad) {
+
+        producto.setExistencias(
+                producto.getExistencias() - cantidad
+        );
+
+        productoService.guardar(producto);
+    }
+
+    private void validarProductoDisponible(
+            Producto producto,
+            Integer cantidad) {
+
+        if (producto == null
+                || !Boolean.TRUE.equals(producto.getActivo())) {
+
+            throw new IllegalArgumentException(
+                    "Hay productos no disponibles en el carrito"
+            );
+        }
+
+        if (cantidad == null || cantidad <= 0) {
+
+            throw new IllegalArgumentException(
+                    "La cantidad de compra no es valida"
+            );
+        }
+
+        if (producto.getExistencias() == null
+                || producto.getExistencias() < cantidad) {
+
+            throw new IllegalArgumentException(
+                    "No hay suficientes existencias para "
+                    + producto.getDescripcion()
+            );
+        }
     }
 }

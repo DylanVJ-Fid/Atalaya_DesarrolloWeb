@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <div class="container mt-5 mb-5">
+
+            <div class="card shadow border-0 mx-auto" style="max-width: 850px;">
+
+                <div class="card-body text-center p-5">
+
+                    <div class="mb-4">
+                        <i class="fa-solid fa-circle-check text-success"
+                           style="font-size: 70px;"></i>
+                    </div>
+
+                    <h1 class="text-success mb-3">
+                        Compra realizada correctamente
+                    </h1>
+
+                    <p class="text-muted mb-4">
+                        Tu pedido fue generado y procesado correctamente.
+                    </p>
+
+                    <div class="row justify-content-center mb-4">
+
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100">
+
+                                <i class="fa-solid fa-receipt text-success mb-2"
+                                   style="font-size: 25px;"></i>
+
+                                <h6 class="text-muted">Pedido</h6>
+
+                                <h4 th:text="'#' + ${factura.idFactura}">
+                                    #000
+                                </h4>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100">
+
+                                <i class="fa-solid fa-credit-card text-success mb-2"
+                                   style="font-size: 25px;"></i>
+
+                                <h6 class="text-muted">Pago</h6>
+
+                                <h5 class="text-success">
+                                    Aprobado
+                                </h5>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100">
+
+                                <i class="fa-solid fa-circle-check text-success mb-2"
+                                   style="font-size: 25px;"></i>
+
+                                <h6 class="text-muted">Estado</h6>
+
+                                <h5 th:text="${factura.estado}">
+                                    Completado
+                                </h5>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="border-top border-bottom py-3 mb-4">
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span>Fecha del pedido</span>
+
+                            <strong th:text="${#temporals.format(factura.fecha,'dd/MM/yyyy HH:mm')}">
+                                15/08/2026 14:00
+                            </strong>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <span>Total pagado</span>
+
+                            <strong class="fs-4 text-success"
+                                    th:text="'₡ ' + ${factura.total}">
+                                ₡0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-success text-start">
+
+                        <div class="d-flex align-items-center">
+
+                            <i class="fa-solid fa-circle-check me-3"
+                               style="font-size: 25px;"></i>
+
+                            <div>
+
+                                <strong>Pago aprobado</strong>
+
+                                <p class="mb-0">
+                                    La compra fue procesada correctamente.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <a th:href="@{/factura/detalle/{id}(id=${factura.idFactura})}"
+                           class="btn btn-success me-2">
+
+                            <i class="fa-solid fa-file-invoice"></i>
+                            Ver pedido
+
+                        </a>
+
+                        <a th:href="@{/producto}"
+                           class="btn btn-secondary">
+
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            Seguir comprando
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+    </body>
+
+</html>

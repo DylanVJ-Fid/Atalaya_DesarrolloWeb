@@ -15,13 +15,13 @@
 
                     <div class="row">
 
-                        <!-- RESUMEN DE COMPRA -->
-                        <div class="col-lg-5 border-end">
+                        <!-- RESUMEN DEL CARRITO -->
+                        <div class="col-lg-7 border-end">
 
-                            <h2>Resumen de compra</h2>
+                            <h2>Resumen del carrito</h2>
 
                             <p class="text-muted">
-                                Verifica la información del producto antes de confirmar la compra.
+                                Verifica los productos antes de confirmar la compra.
                             </p>
 
                             <table class="table table-striped align-middle">
@@ -33,6 +33,7 @@
                                         <th>Producto</th>
                                         <th>Cantidad</th>
                                         <th>Precio</th>
+                                        <th>Subtotal</th>
 
                                     </tr>
 
@@ -40,18 +41,18 @@
 
                                 <tbody>
 
-                                    <tr th:if="${producto != null}">
+                                    <tr th:each="d : ${detalles}">
 
                                         <td>
 
                                             <div class="d-flex align-items-center">
 
-                                                <img th:src="@{${producto.rutaImagen}}"
-                                                     width="80"
+                                                <img th:src="@{${d.producto.rutaImagen}}"
+                                                     width="70"
                                                      class="rounded me-3"
                                                      alt="Producto">
 
-                                                <span th:text="${producto.descripcion}">
+                                                <span th:text="${d.producto.descripcion}">
                                                     Producto
                                                 </span>
 
@@ -59,11 +60,15 @@
 
                                         </td>
 
-                                        <td>
+                                        <td th:text="${d.cantidad}">
                                             1
                                         </td>
 
-                                        <td th:text="'₡ ' + ${producto.precio}">
+                                        <td th:text="'₡ ' + ${d.producto.precio}">
+                                            ₡0
+                                        </td>
+
+                                        <td th:text="'₡ ' + ${d.subtotal}">
                                             ₡0
                                         </td>
 
@@ -72,6 +77,18 @@
                                 </tbody>
 
                             </table>
+
+
+                            <div class="d-flex justify-content-between">
+
+                                <span>Productos</span>
+
+                                <strong th:text="${cantidadProductos}">
+                                    0
+                                </strong>
+
+                            </div>
+
 
                             <div class="d-flex justify-content-between">
 
@@ -82,6 +99,7 @@
                                 </strong>
 
                             </div>
+
 
                             <div class="d-flex justify-content-between">
 
@@ -95,6 +113,7 @@
 
                             <hr>
 
+
                             <div class="d-flex justify-content-between">
 
                                 <h4>Total</h4>
@@ -105,31 +124,21 @@
 
                             </div>
 
-                            <div class="alert alert-info mt-3">
-
-                                <i class="bi bi-lightning-charge-fill"></i>
-
-                                Compra inmediata
-
-                            </div>
-
                         </div>
 
 
                         <!-- INFORMACIÓN DE COMPRA -->
-                        <div class="col-lg-7">
+                        <div class="col-lg-5">
 
-                            <h2>Información de compra</h2>
+                            <h2>Informacion de compra</h2>
 
                             <p class="text-muted">
-                                Completa la siguiente información para finalizar tu pedido.
+                                Completa la informacion para finalizar tu pedido.
                             </p>
 
-                            <form th:action="@{/factura/guardar}" method="post">
 
-                                <input type="hidden"
-                                       name="idProducto"
-                                       th:value="${producto.idProducto}">
+                            <form th:action="@{/factura/guardar-carrito}"
+                                  method="post">
 
 
                                 <!-- NOMBRE -->
@@ -151,7 +160,7 @@
                                 <div class="mb-3">
 
                                     <label class="form-label">
-                                        Correo electrónico
+                                        Correo electronico
                                     </label>
 
                                     <input type="email"
@@ -166,7 +175,7 @@
                                 <div class="mb-3">
 
                                     <label class="form-label">
-                                        Número de tarjeta
+                                        Numero de tarjeta
                                     </label>
 
                                     <input type="text"
@@ -195,6 +204,7 @@
 
                                     </div>
 
+
                                     <div class="col-md-6">
 
                                         <label class="form-label">
@@ -216,7 +226,7 @@
                                 <div class="mb-3">
 
                                     <label class="form-label">
-                                        Dirección
+                                        Direccion
                                     </label>
 
                                     <input type="text"
@@ -227,59 +237,21 @@
                                 </div>
 
 
-                                <!-- CIUDAD, PROVINCIA Y CÓDIGO POSTAL -->
-                                <div class="row">
-
-                                    <div class="col-md-4">
-
-                                        <label class="form-label">
-                                            Ciudad
-                                        </label>
-
-                                        <input type="text"
-                                               class="form-control">
-
-                                    </div>
-
-                                    <div class="col-md-4">
-
-                                        <label class="form-label">
-                                            Provincia
-                                        </label>
-
-                                        <input type="text"
-                                               class="form-control">
-
-                                    </div>
-
-                                    <div class="col-md-4">
-
-                                        <label class="form-label">
-                                            Código Postal
-                                        </label>
-
-                                        <input type="text"
-                                               class="form-control">
-
-                                    </div>
-
-                                </div>
-
-
                                 <!-- BOTONES -->
                                 <div class="text-end mt-4">
 
-                                    <a th:href="@{/producto}"
+                                    <a th:href="@{/carrito/listado}"
                                        class="btn btn-secondary">
 
-                                        Cancelar
+                                        Volver al carrito
 
                                     </a>
+
 
                                     <button type="submit"
                                             class="btn btn-success">
 
-                                        <i class="bi bi-credit-card"></i>
+                                        <i class="fa-solid fa-credit-card"></i>
 
                                         Confirmar Compra
 
