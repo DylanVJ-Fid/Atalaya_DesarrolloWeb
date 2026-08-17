@@ -23,6 +23,7 @@ public class FacturaService {
     public FacturaService(FacturaRepository facturaRepository,
             VentaRepository ventaRepository,
             ProductoService productoService) {
+
         this.facturaRepository = facturaRepository;
         this.ventaRepository = ventaRepository;
         this.productoService = productoService;
@@ -44,32 +45,61 @@ public class FacturaService {
     }
 
     @Transactional
-    public Factura comprarProducto(Producto producto) {
+    public Factura comprarProducto(
+            Producto producto,
+            String nombreFactura,
+            String correo,
+            String direccion) {
+
         validarProductoDisponible(producto, 1);
 
-        Factura factura = crearFactura(producto.getPrecio());
+        Factura factura = crearFactura(
+                producto.getPrecio(),
+                nombreFactura,
+                correo,
+                direccion
+        );
+
         guardarVenta(factura, producto, 1);
         descontarExistencias(producto, 1);
+
         return factura;
     }
 
     @Transactional
-    public Factura comprarCarrito(List<DetalleCarrito> detalles) {
+    public Factura comprarCarrito(
+            List<DetalleCarrito> detalles,
+            String nombreFactura,
+            String correo,
+            String direccion) {
+
         if (detalles == null || detalles.isEmpty()) {
             throw new IllegalArgumentException("El carrito esta vacio");
         }
 
-        detalles.forEach(detalle -> validarProductoDisponible(detalle.getProducto(), detalle.getCantidad()));
+        detalles.forEach(detalle
+                -> validarProductoDisponible(
+                        detalle.getProducto(),
+                        detalle.getCantidad()
+                )
+        );
 
         BigDecimal subtotal = detalles.stream()
                 .map(DetalleCarrito::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Factura factura = crearFactura(subtotal);
+        Factura factura = crearFactura(
+                subtotal,
+                nombreFactura,
+                correo,
+                direccion
+        );
 
         for (DetalleCarrito detalle : detalles) {
+
             Producto producto = detalle.getProducto();
             Integer cantidad = detalle.getCantidad();
+
             guardarVenta(factura, producto, cantidad);
             descontarExistencias(producto, cantidad);
         }
@@ -87,49 +117,88 @@ public class FacturaService {
         facturaRepository.deleteAll();
     }
 
-    private Factura crearFactura(BigDecimal subtotal) {
+    private Factura crearFactura(
+            BigDecimal subtotal,
+            String nombreFactura,
+            String correo,
+            String direccion) {
+
         BigDecimal iva = subtotal.multiply(new BigDecimal("0.13"));
         BigDecimal total = subtotal.add(iva);
         LocalDateTime ahora = LocalDateTime.now();
 
         Factura factura = new Factura();
+
         factura.setFecha(ahora);
         factura.setEstado("Completado");
         factura.setTotal(total);
         factura.setFechaCreacion(ahora);
         factura.setFechaModificacion(ahora);
+
+        // Datos de facturación
+        factura.setNombreFactura(nombreFactura);
+        factura.setCorreo(correo);
+        factura.setDireccion(direccion);
+
         return facturaRepository.save(factura);
     }
 
-    private void guardarVenta(Factura factura, Producto producto, Integer cantidad) {
+    private void guardarVenta(
+            Factura factura,
+            Producto producto,
+            Integer cantidad) {
+
         LocalDateTime ahora = LocalDateTime.now();
 
         Venta venta = new Venta();
+
         venta.setFactura(factura);
         venta.setProducto(producto);
         venta.setCantidad(cantidad);
         venta.setPrecioHistorico(producto.getPrecio());
         venta.setFechaCreacion(ahora);
         venta.setFechaModificacion(ahora);
+
         ventaRepository.save(venta);
     }
 
-    private void descontarExistencias(Producto producto, Integer cantidad) {
-        producto.setExistencias(producto.getExistencias() - cantidad);
+    private void descontarExistencias(
+            Producto producto,
+            Integer cantidad) {
+
+        producto.setExistencias(
+                producto.getExistencias() - cantidad
+        );
+
         productoService.guardar(producto);
     }
 
-    private void validarProductoDisponible(Producto producto, Integer cantidad) {
-        if (producto == null || !Boolean.TRUE.equals(producto.getActivo())) {
-            throw new IllegalArgumentException("Hay productos no disponibles en el carrito");
+    private void validarProductoDisponible(
+            Producto producto,
+            Integer cantidad) {
+
+        if (producto == null
+                || !Boolean.TRUE.equals(producto.getActivo())) {
+
+            throw new IllegalArgumentException(
+                    "Hay productos no disponibles en el carrito"
+            );
         }
 
         if (cantidad == null || cantidad <= 0) {
-            throw new IllegalArgumentException("La cantidad de compra no es valida");
+
+            throw new IllegalArgumentException(
+                    "La cantidad de compra no es valida"
+            );
         }
 
-        if (producto.getExistencias() == null || producto.getExistencias() < cantidad) {
-            throw new IllegalArgumentException("No hay suficientes existencias para " + producto.getDescripcion());
+        if (producto.getExistencias() == null
+                || producto.getExistencias() < cantidad) {
+
+            throw new IllegalArgumentException(
+                    "No hay suficientes existencias para "
+                    + producto.getDescripcion()
+            );
         }
     }
 }

@@ -30,16 +30,21 @@ public class FacturaController {
     private final ProductoService productoService;
     private final CarritoService carritoService;
 
-    public FacturaController(FacturaService facturaService,
+    public FacturaController(
+            FacturaService facturaService,
             ProductoService productoService,
             CarritoService carritoService) {
+
         this.facturaService = facturaService;
         this.productoService = productoService;
         this.carritoService = carritoService;
     }
 
     @GetMapping("/checkout/{id}")
-    public String checkout(@PathVariable Integer id, Model model) {
+    public String checkout(
+            @PathVariable Integer id,
+            Model model) {
+
         Optional<Producto> producto = productoService.buscarPorId(id);
 
         if (producto.isEmpty()) {
@@ -47,22 +52,10 @@ public class FacturaController {
         }
 
         BigDecimal subtotal = producto.get().getPrecio();
+
         cargarTotales(model, subtotal);
+
         model.addAttribute("producto", producto.get());
-
-        return "factura/checkout";
-    }
-
-    @GetMapping("/checkout-carrito")
-    public String checkoutCarrito(@CookieValue(name = CARRITO_COOKIE, required = false) Integer idCarrito,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-        List<DetalleCarrito> detalles = carritoService.getDetalles(idCarrito);
-
-        if (detalles.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "El carrito esta vacio");
-            return "redirect:/carrito/listado";
-        }
 
         BigDecimal subtotal = carritoService.getTotal(idCarrito);
         cargarTotales(model, subtotal);
@@ -72,69 +65,203 @@ public class FacturaController {
         return "factura/checkout-carrito";
     }
 
+    @GetMapping("/checkout-carrito")
+    public String checkoutCarrito(
+            @CookieValue(
+                    name = CARRITO_COOKIE,
+                    required = false) Integer idCarrito,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        List<DetalleCarrito> detalles
+                = carritoService.getDetalles(idCarrito);
+
+        if (detalles.isEmpty()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El carrito esta vacio");
+
+            return "redirect:/carrito/listado";
+        }
+
+        BigDecimal subtotal
+                = carritoService.getTotal(idCarrito);
+
+        cargarTotales(model, subtotal);
+
+        model.addAttribute("detalles", detalles);
+
+        model.addAttribute(
+                "cantidadProductos",
+                carritoService.getCantidadProductos(idCarrito));
+
+        return "factura/checkout-carrito";
+    }
+
     @GetMapping("/historial")
     public String historial(Model model) {
-        model.addAttribute("facturas", facturaService.listar());
+
+        model.addAttribute(
+                "facturas",
+                facturaService.listar());
+
         return "factura/historial";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@RequestParam Integer idProducto,
+    public String guardar(
+            @RequestParam Integer idProducto,
+            @RequestParam String nombreFactura,
+            @RequestParam String correo,
+            @RequestParam String direccion,
             RedirectAttributes redirectAttributes) {
-        Optional<Producto> producto = productoService.buscarPorId(idProducto);
+
+        Optional<Producto> producto
+                = productoService.buscarPorId(idProducto);
 
         if (producto.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "El producto no existe");
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El producto no existe");
+
             return "redirect:/producto";
         }
 
         try {
-            facturaService.comprarProducto(producto.get());
-            redirectAttributes.addFlashAttribute("todoOk", "Compra realizada correctamente");
-            return "redirect:/factura/historial";
+
+            Factura factura
+                    = facturaService.comprarProducto(
+                            producto.get(),
+                            nombreFactura,
+                            correo,
+                            direccion);
+
+            redirectAttributes.addFlashAttribute(
+                    "factura",
+                    factura);
+
+            return "redirect:/factura/confirmacion/"
+                    + factura.getIdFactura();
+
         } catch (IllegalArgumentException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    ex.getMessage());
+
             return "redirect:/producto";
         }
     }
 
     @PostMapping("/guardar-carrito")
-    public String guardarCarrito(@CookieValue(name = CARRITO_COOKIE, required = false) Integer idCarrito,
+    public String guardarCarrito(
+            @CookieValue(
+                    name = CARRITO_COOKIE,
+                    required = false) Integer idCarrito,
+            @RequestParam String nombreFactura,
+            @RequestParam String correo,
+            @RequestParam String direccion,
             RedirectAttributes redirectAttributes) {
-        List<DetalleCarrito> detalles = carritoService.getDetalles(idCarrito);
+
+        List<DetalleCarrito> detalles
+                = carritoService.getDetalles(idCarrito);
 
         try {
-            facturaService.comprarCarrito(detalles);
+
+            Factura factura
+                    = facturaService.comprarCarrito(
+                            detalles,
+                            nombreFactura,
+                            correo,
+                            direccion);
+
             carritoService.vaciar(idCarrito);
-            redirectAttributes.addFlashAttribute("todoOk", "Compra del carrito realizada correctamente");
-            return "redirect:/factura/historial";
+
+            redirectAttributes.addFlashAttribute(
+                    "factura",
+                    factura);
+
+            return "redirect:/factura/confirmacion/"
+                    + factura.getIdFactura();
+
         } catch (IllegalArgumentException ex) {
-            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    ex.getMessage());
+
             return "redirect:/carrito/listado";
         }
     }
 
+    @GetMapping("/confirmacion/{id}")
+    public String confirmacion(
+            @PathVariable Long id,
+            Model model) {
+
+        Optional<Factura> factura
+                = facturaService.buscarPorId(id);
+
+        if (factura.isEmpty()) {
+            return "redirect:/factura/historial";
+        }
+
+        model.addAttribute(
+                "factura",
+                factura.get());
+
+        return "factura/confirmacion";
+    }
+
     @GetMapping("/detalle/{id}")
-    public String detalle(@PathVariable Long id, Model model) {
-        Optional<Factura> factura = facturaService.buscarPorId(id);
+    public String detalle(
+            @PathVariable Long id,
+            Model model) {
 
-        factura.ifPresent(f -> model.addAttribute("factura", f));
+        Optional<Factura> factura
+                = facturaService.buscarPorId(id);
 
-        return "factura/checkout";
+        if (factura.isEmpty()) {
+            return "redirect:/factura/historial";
+        }
+
+        model.addAttribute(
+                "factura",
+                factura.get());
+
+        return "factura/detalle";
     }
 
     @PostMapping("/limpiar")
     public String limpiarHistorial() {
+
         facturaService.eliminarTodo();
+
         return "redirect:/factura/historial";
     }
 
-    private void cargarTotales(Model model, BigDecimal subtotal) {
-        BigDecimal iva = subtotal.multiply(IVA);
-        BigDecimal total = subtotal.add(iva);
+    private void cargarTotales(
+            Model model,
+            BigDecimal subtotal) {
 
-        model.addAttribute("subtotal", subtotal);
-        model.addAttribute("iva", iva);
-        model.addAttribute("total", total);
+        BigDecimal iva
+                = subtotal.multiply(IVA);
+
+        BigDecimal total
+                = subtotal.add(iva);
+
+        model.addAttribute(
+                "subtotal",
+                subtotal);
+
+        model.addAttribute(
+                "iva",
+                iva);
+
+        model.addAttribute(
+                "total",
+                total);
     }
 }

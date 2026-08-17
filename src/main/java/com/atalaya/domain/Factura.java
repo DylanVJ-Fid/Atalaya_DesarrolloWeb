@@ -1,7 +1,7 @@
 package com.atalaya.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -37,7 +37,22 @@ public class Factura implements Serializable {
 
     private LocalDateTime fechaModificacion;
 
-    @OneToMany(mappedBy = "factura", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    // Datos de facturación
+    @Column(length = 150)
+    private String nombreFactura;
+
+    @Column(length = 150)
+    private String correo;
+
+    @Column(length = 255)
+    private String direccion;
+
+    @OneToMany(
+            mappedBy = "factura",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Venta> ventas;
 
     public Factura() {
@@ -89,6 +104,30 @@ public class Factura implements Serializable {
 
     public void setFechaModificacion(LocalDateTime fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
+    }
+
+    public String getNombreFactura() {
+        return nombreFactura;
+    }
+
+    public void setNombreFactura(String nombreFactura) {
+        this.nombreFactura = nombreFactura;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public List<Venta> getVentas() {
