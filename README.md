@@ -207,6 +207,10 @@ firebase.json.file=atalaya-65141-firebase-adminsdk-fbsvc-5c3535b580.json
 
 El archivo JSON contiene una llave privada y está excluido del repositorio. Debe suministrarse de forma segura en cada ambiente. Las propiedades por sí solas no inicializan Firebase; se requiere la dependencia Firebase Admin y una clase de configuración antes de utilizar Storage desde el código.
 
+Para Render, el contenido completo del JSON debe convertirse a Base64 y guardarse
+en la variable secreta `FIREBASE_CREDENTIALS_BASE64`. En desarrollo local se usa
+el archivo JSON ignorado dentro de `src/main/resources/firebase`.
+
 ## Internacionalización
 
 La interfaz actual está redactada en español. Si el requisito académico exige internacionalización técnica con cambio de idioma, todavía se deben añadir archivos `messages_es.properties`, `messages_en.properties`, un `LocaleResolver` y un selector de idioma. No se marca como finalizada hasta comprobar ese comportamiento.
