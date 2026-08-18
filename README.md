@@ -50,6 +50,9 @@ Atalaya es una tienda virtual desarrollada con Java y Spring Boot. Permite admin
    DB_PASSWORD=contraseña_mysql
    MAIL_USERNAME=correo_emisor
    MAIL_PASSWORD=contraseña_de_aplicacion
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_FROM=correo_emisor
    APP_BASE_URL=http://localhost:8080
    ```
 
@@ -181,11 +184,16 @@ DB_USERNAME=avnadmin
 DB_PASSWORD=contraseña_de_Aiven
 MAIL_USERNAME=correo_emisor
 MAIL_PASSWORD=contraseña_de_aplicacion_de_Gmail
+MAIL_HOST=smtp.mailersend.net
+MAIL_PORT=2525
+MAIL_FROM=remitente_en_dominio_verificado
 APP_BASE_URL=https://nombre-del-servicio.onrender.com
 SPRING_PROFILES_ACTIVE=default
 ```
 
 `APP_BASE_URL` es indispensable para que el correo genere un enlace público de activación y no uno dirigido a `localhost`.
+
+En una instancia gratuita de Render se debe utilizar el puerto alternativo `2525` de MailerSend, porque Render bloquea la salida SMTP por los puertos 25, 465 y 587. `MAIL_FROM` debe pertenecer al dominio verificado en MailerSend y no debe confundirse con el nombre de usuario SMTP.
 
 ## Firebase Storage
 

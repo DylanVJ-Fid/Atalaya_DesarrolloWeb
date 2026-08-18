@@ -2,6 +2,7 @@ package com.atalaya.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,9 +14,12 @@ import org.springframework.stereotype.Service;
 public class CorreoService {
 
     private final JavaMailSender mailSender;
+    private final String remitente;
 
-    public CorreoService(JavaMailSender mailSender) {
+    public CorreoService(JavaMailSender mailSender,
+            @Value("${spring.mail.from}") String remitente) {
         this.mailSender = mailSender;
+        this.remitente = remitente;
     }
 
     //cambio final agregado
@@ -28,6 +32,7 @@ public class CorreoService {
             MimeMessage mensaje = mailSender.createMimeMessage();
             MimeMessageHelper correo = new MimeMessageHelper(mensaje, true);
 
+            correo.setFrom(remitente);
             correo.setTo(para);
             correo.setSubject(asunto);
             correo.setText(contenido, true);
