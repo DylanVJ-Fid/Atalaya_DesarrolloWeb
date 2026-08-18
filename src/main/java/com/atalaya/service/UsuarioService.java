@@ -51,10 +51,6 @@ public class UsuarioService implements UserDetailsService {
     @Transactional
     public void guardar(Usuario usuario) {
 
-        if (usuario.getActivo() == null) {
-            usuario.setActivo(true);
-        }
-
         if (usuario.getPassword() != null
                 && !usuario.getPassword().isBlank()
                 && !usuario.getPassword().startsWith("$2a$")
@@ -86,7 +82,7 @@ public class UsuarioService implements UserDetailsService {
                     "Usuario no encontrado: " + correo);
         }
 
-        if (!Boolean.TRUE.equals(usuario.getActivo())) {
+        if (!usuario.isActivo()) {
             throw new UsernameNotFoundException(
                     "El usuario está inactivo: " + correo);
         }

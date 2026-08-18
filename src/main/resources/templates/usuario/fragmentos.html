@@ -22,10 +22,29 @@
                 <input type="hidden" th:field="*{idUsuario}" />
 
                 <div class="col-md-6">
+                    <label class="form-label">Nombre de usuario</label>
+                    <input type="text"
+                           th:field="*{username}"
+                           class="form-control"
+                           maxlength="30"
+                           required />
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label">Nombre</label>
                     <input type="text"
                            th:field="*{nombre}"
                            class="form-control"
+                           maxlength="20"
+                           required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Apellidos</label>
+                    <input type="text"
+                           th:field="*{apellidos}"
+                           class="form-control"
+                           maxlength="30"
                            required />
                 </div>
 

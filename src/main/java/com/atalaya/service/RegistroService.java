@@ -40,7 +40,7 @@ public class RegistroService {
 
         String servidorHttp = constanteService.getValor(
                 "servidor.http",
-                "http://localhost:8080"
+                "https://atalaya-desarrolloweb-gljc.onrender.com"
         );
 
         String enlace = UriComponentsBuilder.fromUriString(servidorHttp)
@@ -72,7 +72,7 @@ public class RegistroService {
 
         if (usuario != null
                 && usuario.getPassword().equals(claveActivacion)
-                && Boolean.FALSE.equals(usuario.getActivo())) {
+                && !usuario.isActivo()) {
 
             return usuario;
         }
@@ -93,7 +93,7 @@ public class RegistroService {
 
         if (usuarioActual == null
                 || !usuarioActual.getPassword().equals(claveActivacion)
-                || Boolean.TRUE.equals(usuarioActual.getActivo())) {
+                || usuarioActual.isActivo()) {
 
             return false;
         }

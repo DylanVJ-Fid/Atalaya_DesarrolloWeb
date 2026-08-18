@@ -59,7 +59,7 @@ Atalaya es una tienda virtual desarrollada con Java y Spring Boot. Permite admin
    mvn spring-boot:run
    ```
 
-5. Abrir `http://localhost:8080/`.
+5. Abrir `https://atalaya-desarrolloweb-gljc.onrender.com/`.
 
 Las credenciales nunca deben guardarse en Git. Para desarrollo local se puede crear `src/main/resources/application-local.properties`; este archivo está excluido mediante `.gitignore`.
 
@@ -186,7 +186,7 @@ MAIL_FROM=correo_emisor
 SPRING_PROFILES_ACTIVE=default
 ```
 
-El enlace de activación se construye con el valor `servidor.http` de la tabla `constante`. Para desarrollo se utiliza `http://localhost:8080`; en una base destinada a producción se debe actualizar con la URL pública del servicio.
+El enlace de activación se construye con el valor `servidor.http` de la tabla `constante`. El valor configurado para producción es `https://atalaya-desarrolloweb-gljc.onrender.com`.
 
 ```sql
 UPDATE constante

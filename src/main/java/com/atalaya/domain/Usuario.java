@@ -7,7 +7,9 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "usuario")
 public class Usuario implements Serializable {
@@ -18,79 +20,46 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idUsuario;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 30)
     @NotNull
-    @Size(max = 100)
-    private String nombre;
+    @Size(max = 30)
+    private String username;
 
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(nullable = false, length = 512)
     @NotNull
-    @Email
-    @Size(max = 100)
-    private String correo;
-
-    @Column(nullable = false)
-    @NotNull
+    @Size(max = 512)
     private String password;
 
-    private Boolean activo;
+    @Column(nullable = false, length = 20)
+    @NotNull
+    @Size(max = 20)
+    private String nombre;
 
+    @Column(nullable = false, length = 30)
+    @NotNull
+    @Size(max = 30)
+    private String apellidos;
+
+    @Column(unique = true, nullable = false, length = 75)
+    @NotNull
+    @Size(max = 75)
+    private String correo;
+
+    @Column(length = 25)
+    @Size(max = 25)
+    private String telefono;
+
+    @Column(length = 1024)
+    @Size(max = 1024)
+    private String rutaImagen;
+
+    private boolean activo;
+
+    //Se define la realación Many to Many entre Usuario y Rol, usando la tabla intermedia usuario rol
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "usuario_rol",
-            joinColumns = @JoinColumn(name = "id_usuario"),
+    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol")
     )
     private Set<Rol> roles = new HashSet<>();
 
-    public Usuario() {
-    }
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-
-    public Set<Rol> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Rol> roles) {
-        this.roles = roles;
-    }
 }

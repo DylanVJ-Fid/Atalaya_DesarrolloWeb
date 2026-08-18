@@ -124,7 +124,7 @@ INSERT INTO constante (atributo, valor) VALUES
 ('dominio', 'localhost'),
 ('dolar', '520.75'),
 ('paypal.mode', 'sandbox'),
-('servidor.http', 'http://localhost:8080'),
+('servidor.http', 'https://atalaya-desarrolloweb-gljc.onrender.com'),
 ('url_paypal_cancel', 'http://localhost/payment/cancel'),
 ('url_paypal_success', 'http://localhost/payment/success'),
 ('app.paypal.return-url', '/paypal/order/capture'),
