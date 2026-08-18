@@ -248,21 +248,3 @@ src/main/resources
 |-- application.properties
 `-- firebase (credencial local no publicada)
 ```
-
-## Validación académica
-
-- [x] README actualizado.
-- [x] Instrucciones para crear y poblar la base de datos.
-- [x] Mínimo de 8 tablas: el proyecto define 11.
-- [x] Tablas transaccionales: `factura` y `venta`.
-- [x] Código adicional: procesamiento asíncrono de correos.
-- [ ] Agregar el enlace compartido del artículo IEEE.
-- [ ] Finalizar y entregar el artículo científico.
-- [ ] Confirmar internacionalización técnica en al menos dos idiomas.
-
-## Recomendaciones de seguridad
-
-- No publicar contraseñas, tokens ni el JSON de Firebase.
-- Configurar secretos mediante variables de entorno en Render.
-- Rotar cualquier credencial que haya sido expuesta anteriormente.
-- Mantener `application-local.properties` únicamente en cada computadora de desarrollo.
