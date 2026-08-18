@@ -42,14 +42,22 @@ Atalaya es una tienda virtual desarrollada con Java y Spring Boot. Permite admin
 
 2. Crear y poblar la base de datos siguiendo la sección siguiente.
 
-3. Definir las variables de entorno:
+3. Para desarrollo local, crear `src/main/resources/application-local.properties`
+   y configurar la base de datos y Gmail con una contraseña de aplicación:
 
-   ```text
-   DB_URL=jdbc:mysql://localhost:3306/atalaya
-   DB_USERNAME=root
-   DB_PASSWORD=contraseña_mysql
-   MAILERSEND_API_TOKEN=token_de_mailersend
-   MAIL_FROM=correo_de_dominio_verificado
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/atalaya
+   spring.datasource.username=root
+   spring.datasource.password=contraseña_mysql
+
+   correo.proveedor=gmail
+   correo.remitente=correo_emisor@gmail.com
+   spring.mail.host=smtp.gmail.com
+   spring.mail.port=587
+   spring.mail.username=correo_emisor@gmail.com
+   spring.mail.password=contraseña_de_aplicacion
+   spring.mail.properties.mail.smtp.auth=true
+   spring.mail.properties.mail.smtp.starttls.enable=true
    ```
 
 4. Ejecutar la aplicación:

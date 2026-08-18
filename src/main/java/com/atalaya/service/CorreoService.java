@@ -10,9 +10,12 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -26,16 +29,22 @@ public class CorreoService {
 
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
+    private final JavaMailSender mailSender;
+    private final String proveedor;
     private final String apiToken;
     private final String remitente;
 
     public CorreoService(ObjectMapper objectMapper,
+            JavaMailSender mailSender,
+            @Value("${correo.proveedor:mailersend}") String proveedor,
             @Value("${mailersend.api-token:}") String apiToken,
-            @Value("${mailersend.from:}") String remitente) {
+            @Value("${correo.remitente:}") String remitente) {
         this.objectMapper = objectMapper;
+        this.mailSender = mailSender;
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
+        this.proveedor = proveedor;
         this.apiToken = apiToken;
         this.remitente = remitente;
     }
@@ -46,8 +55,35 @@ public class CorreoService {
             String asunto,
             String contenido) {
 
-        if (apiToken.isBlank() || remitente.isBlank()) {
-            LOGGER.warn("No se envió el correo a {}: faltan MAILERSEND_API_TOKEN o MAIL_FROM", para);
+        if (remitente.isBlank()) {
+            LOGGER.warn("No se envió el correo a {}: falta configurar el remitente", para);
+            return;
+        }
+
+        if ("gmail".equalsIgnoreCase(proveedor)) {
+            enviarConGmail(para, asunto, contenido);
+        } else {
+            enviarConMailerSend(para, asunto, contenido);
+        }
+    }
+
+    private void enviarConGmail(String para, String asunto, String contenido) {
+        try {
+            MimeMessage mensaje = mailSender.createMimeMessage();
+            MimeMessageHelper correo = new MimeMessageHelper(mensaje, true, "UTF-8");
+            correo.setFrom(remitente);
+            correo.setTo(para);
+            correo.setSubject(asunto);
+            correo.setText(contenido, true);
+            mailSender.send(mensaje);
+        } catch (Exception e) {
+            LOGGER.warn("Gmail no pudo enviar el correo a {}: {}", para, e.getMessage());
+        }
+    }
+
+    private void enviarConMailerSend(String para, String asunto, String contenido) {
+        if (apiToken.isBlank()) {
+            LOGGER.warn("No se envió el correo a {}: falta MAILERSEND_API_TOKEN", para);
             return;
         }
 
