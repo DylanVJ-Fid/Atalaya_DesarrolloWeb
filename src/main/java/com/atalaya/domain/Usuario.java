@@ -20,9 +20,9 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idUsuario;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 50)
     @NotNull
-    @Size(max = 30)
+    @Size(max = 50)
     private String username;
 
     @Column(nullable = false, length = 512)
@@ -35,9 +35,9 @@ public class Usuario implements Serializable {
     @Size(max = 20)
     private String nombre;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 100)
     @NotNull
-    @Size(max = 30)
+    @Size(max = 100)
     private String apellidos;
 
     @Column(unique = true, nullable = false, length = 75)

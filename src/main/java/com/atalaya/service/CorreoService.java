@@ -14,9 +14,12 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -46,7 +49,7 @@ public class CorreoService {
     private final String gmailRefreshToken;
 
     public CorreoService(ObjectMapper objectMapper,
-            JavaMailSender mailSender,
+            ObjectProvider<JavaMailSender> mailSenderProvider,
             @Value("${correo.proveedor:mailersend}") String proveedor,
             @Value("${mailersend.api-token:}") String apiToken,
             @Value("${correo.remitente:}") String remitente,
@@ -54,7 +57,7 @@ public class CorreoService {
             @Value("${gmail.client-secret:}") String gmailClientSecret,
             @Value("${gmail.refresh-token:}") String gmailRefreshToken) {
         this.objectMapper = objectMapper;
-        this.mailSender = mailSender;
+        this.mailSender = mailSenderProvider.getIfAvailable();
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
@@ -85,6 +88,11 @@ public class CorreoService {
     }
 
     private void enviarConGmailSmtp(String para, String asunto, String contenido) {
+        if (mailSender == null) {
+            LOGGER.warn("No se envió el correo a {}: Gmail SMTP no está configurado", para);
+            return;
+        }
+
         try {
             mailSender.send(crearMensaje(para, asunto, contenido));
         } catch (Exception e) {
@@ -160,7 +168,9 @@ public class CorreoService {
 
     private MimeMessage crearMensaje(String para, String asunto, String contenido)
             throws Exception {
-        MimeMessage mensaje = mailSender.createMimeMessage();
+        MimeMessage mensaje = mailSender != null
+                ? mailSender.createMimeMessage()
+                : new MimeMessage(Session.getInstance(new Properties()));
         MimeMessageHelper correo = new MimeMessageHelper(mensaje, true, "UTF-8");
         correo.setFrom(remitente);
         correo.setTo(para);
