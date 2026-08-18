@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body>
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <main class="container py-4">
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${todoOk}" class="alert alert-success" th:text="${todoOk}"></div>
+
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0" th:text="${rol.idRol == null ? 'Nuevo rol' : 'Modificar rol'}"></h4>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/rol/guardar}" th:object="${rol}" method="post">
+                                <input type="hidden" th:field="*{idRol}" />
+
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label">Nombre</label>
+                                    <input id="nombre"
+                                           type="text"
+                                           th:field="*{nombre}"
+                                           class="form-control"
+                                           maxlength="50"
+                                           placeholder="Ejemplo: SOPORTE"
+                                           required />
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                                </button>
+                                <a th:if="${rol.idRol != null}"
+                                   th:href="@{/rol/listado}"
+                                   class="btn btn-secondary">
+                                    Cancelar
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">Roles registrados</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th class="text-end">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item : ${roles}">
+                                            <td th:text="${item.idRol}"></td>
+                                            <td th:text="${item.nombre}"></td>
+                                            <td class="text-end">
+                                                <a th:href="@{/rol/modificar/{id}(id=${item.idRol})}"
+                                                   class="btn btn-warning btn-sm">
+                                                    <i class="fa-solid fa-pen"></i> Editar
+                                                </a>
+                                                <form th:action="@{/rol/eliminar/{id}(id=${item.idRol})}"
+                                                      method="post"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('¿Deseas eliminar este rol?');">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-trash"></i> Eliminar
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${roles == null or roles.empty}">
+                                            <td colspan="3" class="text-center text-muted">No hay roles registrados.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+    </body>
+</html>

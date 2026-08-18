@@ -30,6 +30,7 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers("/usuario/**").hasRole("ADMIN")
+                        .requestMatchers("/rol/**").hasRole("ADMIN")
                         .requestMatchers(
                                 "/carrito/**",
                                 "/factura/**",
