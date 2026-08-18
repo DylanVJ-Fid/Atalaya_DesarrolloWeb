@@ -2,10 +2,15 @@ package com.atalaya.controller;
 
 import com.atalaya.domain.Usuario;
 import com.atalaya.service.RolService;
+import com.atalaya.service.RegistroService;
 import com.atalaya.service.UsuarioService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/usuario")
@@ -13,10 +18,15 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final RolService rolService;
+    private final RegistroService registroService;
 
-    public UsuarioController(UsuarioService usuarioService, RolService rolService) {
+    public UsuarioController(UsuarioService usuarioService,
+            RolService rolService,
+            RegistroService registroService) {
+
         this.usuarioService = usuarioService;
         this.rolService = rolService;
+        this.registroService = registroService;
     }
 
     // Página de login
@@ -29,7 +39,6 @@ public class UsuarioController {
     @GetMapping("/registro")
     public String registro(Model model) {
         model.addAttribute("usuario", new Usuario());
-        model.addAttribute("roles", rolService.listar());
         return "usuario/registro";
     }
 
@@ -41,22 +50,34 @@ public class UsuarioController {
 
         if (existente != null) {
             model.addAttribute("usuario", usuario);
-            model.addAttribute("roles", rolService.listar());
-            model.addAttribute("error", "Ya existe una cuenta registrada con ese correo.");
+            model.addAttribute("error",
+                    "Ya existe una cuenta registrada con ese correo.");
             return "usuario/registro";
         }
 
-        usuario.setActivo(true);
-
         // USER representa al cliente normal
-        usuario.setRol(rolService.buscarPorNombre("USER"));
+        usuario.getRoles().add(
+                rolService.buscarPorNombre("USER")
+        );
 
-        usuarioService.guardar(usuario);
+        registroService.registrar(usuario);
 
-        return "redirect:/usuario/login?registro=true";
+        return "redirect:/usuario/verificar?correo=" + usuario.getCorreo();
     }
 
-    // Listado de usuarios - Spring Security controla que sea ADMIN
+    // Página para indicar que debe verificar el correo
+    //cambio final agregado
+    @GetMapping("/verificar")
+    public String verificarCorreo(
+            @RequestParam String correo,
+            Model model) {
+
+        model.addAttribute("correo", correo);
+
+        return "usuario/verificar";
+    }
+
+    // Listado de usuarios
     @GetMapping("/listado")
     public String listado(Model model) {
 
@@ -69,9 +90,12 @@ public class UsuarioController {
 
     // Modificar usuario
     @GetMapping("/modificar/{idUsuario}")
-    public String modificar(@PathVariable Integer idUsuario, Model model) {
+    public String modificar(
+            @PathVariable Integer idUsuario,
+            Model model) {
 
-        Usuario usuario = usuarioService.buscarPorId(idUsuario).orElse(null);
+        Usuario usuario =
+                usuarioService.buscarPorId(idUsuario).orElse(null);
 
         if (usuario == null) {
             return "redirect:/usuario/listado";
@@ -83,23 +107,32 @@ public class UsuarioController {
         return "usuario/modificar";
     }
 
-    //Actualizar usuario
+    // Actualizar usuario
     @PostMapping("/actualizar")
     public String actualizar(Usuario usuario) {
 
-        Usuario usuarioActual
-                = usuarioService.buscarPorId(usuario.getIdUsuario()).orElse(null);
+        Usuario usuarioActual =
+                usuarioService.buscarPorId(
+                        usuario.getIdUsuario()
+                ).orElse(null);
 
         if (usuarioActual == null) {
             return "redirect:/usuario/listado";
         }
 
         // Si no escribió una nueva contraseña,
-        // mantenemos la contraseña cifrada que ya tenía
+        // mantenemos la contraseña actual
         if (usuario.getPassword() == null
                 || usuario.getPassword().isBlank()) {
 
             usuario.setPassword(usuarioActual.getPassword());
+        }
+
+        // Si no se enviaron roles, conservamos los actuales
+        if (usuario.getRoles() == null
+                || usuario.getRoles().isEmpty()) {
+
+            usuario.setRoles(usuarioActual.getRoles());
         }
 
         usuarioService.guardar(usuario);
@@ -109,7 +142,8 @@ public class UsuarioController {
 
     // Eliminar usuario
     @GetMapping("/eliminar/{idUsuario}")
-    public String eliminar(@PathVariable Integer idUsuario) {
+    public String eliminar(
+            @PathVariable Integer idUsuario) {
 
         usuarioService.eliminar(idUsuario);
 

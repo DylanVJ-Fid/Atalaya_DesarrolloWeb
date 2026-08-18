@@ -12,4 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     public List<Usuario> findByActivoTrue();
 
+    //cambio final agregado
+    public Usuario findByCorreoAndPassword(String correo, String password);
+
 }

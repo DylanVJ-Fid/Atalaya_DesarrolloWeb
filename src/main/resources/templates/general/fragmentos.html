@@ -1,122 +1,217 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <body>
 
         <!-- Head -->
-        <head th:fragment="head">
-            <title>Atalaya</title>
-            <meta charset="UTF-8"/>
+    <head th:fragment="head">
+        <title>Atalaya</title>
+        <meta charset="UTF-8"/>
 
-            <!-- Bootstrap -->
-            <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
-            <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <!-- Bootstrap -->
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
 
-            <!-- Scripts -->
-            <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
-            <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-        </head>
+        <!-- Scripts -->
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    </head>
 
-        <!-- Header -->
-        <header th:fragment="header" class="bg-dark text-white">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container">
+    <!-- Header -->
+    <header th:fragment="header" class="bg-dark text-white">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
 
-                    <a class="navbar-brand" th:href="@{/producto}">ATALAYA</a>
+                <a class="navbar-brand" th:href="@{/producto}">ATALAYA</a>
 
-                    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+                <button class="navbar-toggler"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                    <div class="collapse navbar-collapse" id="menu">
-                        <ul class="navbar-nav me-auto">
+                <div class="collapse navbar-collapse" id="menu">
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/producto}">Inicio</a>
-                            </li>
+                    <ul class="navbar-nav me-auto">
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/producto/listado}">Productos</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/producto}">
+                                Inicio
+                            </a>
+                        </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/categoria/listado}">Categorias</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/producto/listado}">
+                                Productos
+                            </a>
+                        </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle"
-                                   href="#"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-                                    Usuarios
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" th:href="@{/usuario/login}">
-                                            Login
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" th:href="@{/usuario/registro}">
-                                            Registro
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" th:href="@{/usuario/listado}">
-                                            Administrar usuarios
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categoria/listado}">
+                                Categorias
+                            </a>
+                        </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/factura/historial}">
-                                    Historial
-                                </a>
-                            </li>
+                        <!-- USUARIOS: SOLO ADMIN -->
+                        <li class="nav-item dropdown"
+                            sec:authorize="hasRole('ADMIN')">
 
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/carrito/listado}">
-                                    <i class="fa-solid fa-cart-shopping"></i>
-                                    Carrito
-                                    <span class="badge bg-success" th:text="${carritoCantidad}">0</span>
-                                </a>
-                            </li>
+                            <a class="nav-link dropdown-toggle"
+                               href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Usuarios
+                            </a>
 
-                        </ul>
+                            <ul class="dropdown-menu">
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       th:href="@{/usuario/login}">
+                                        Login
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       th:href="@{/usuario/registro}">
+                                        Registro
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       th:href="@{/usuario/listado}">
+                                        Administrar usuarios
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </li>
+
+                        <!-- LOGIN / REGISTRO PARA USUARIOS NO AUTENTICADOS -->
+                        <li class="nav-item dropdown"
+                            sec:authorize="!isAuthenticated()">
+
+                            <a class="nav-link dropdown-toggle"
+                               href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Usuarios
+                            </a>
+
+                            <ul class="dropdown-menu">
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       th:href="@{/usuario/login}">
+                                        Login
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       th:href="@{/usuario/registro}">
+                                        Registro
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               th:href="@{/factura/historial}">
+                                Historial
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               th:href="@{/carrito/listado}">
+
+                                <i class="fa-solid fa-cart-shopping"></i>
+
+                                Carrito
+
+                                <span class="badge bg-success"
+                                      th:text="${carritoCantidad}">
+                                    0
+                                </span>
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                    <!-- CERRAR SESIÓN -->
+                    <div sec:authorize="isAuthenticated"
+                         class="d-flex align-items-center ms-auto">
+
+                        <form th:action="@{/logout}"
+                              method="post"
+                              class="mb-0">
+
+                            <button type="submit"
+                                    class="btn btn-outline-light btn-sm">
+                                Cerrar sesión
+                            </button>
+
+                        </form>
+
                     </div>
+
                 </div>
-            </nav>
+            </div>
+        </nav>
 
-            <section class="bg-success p-2">
-                <div class="container">
-                    <h2>Sistema Atalaya</h2>
-                </div>
-            </section>
-        </header>
-
-        <!-- Footer -->
-        <footer th:fragment="footer" class="bg-dark text-white text-center p-3 mt-4">
-            <p>© 2026 Atalaya</p>
-        </footer>
-
-        <!-- Toast Mensaje -->
-        <section th:fragment="mostrarToast">
-            <div class="position-fixed top-50 start-50 translate-middle">
-
-                <div th:if="${error}" class="alert alert-danger">
-                    [[${error}]]
-                </div>
-
-                <div th:if="${todoOk}" class="alert alert-success">
-                    [[${todoOk}]]
-                </div>
-
+        <section class="bg-success p-2">
+            <div class="container">
+                <h2>Sistema Atalaya</h2>
             </div>
         </section>
 
-    </body>
+    </header>
+
+    <!-- Footer -->
+    <footer th:fragment="footer"
+            class="bg-dark text-white text-center p-3 mt-4">
+
+        <p>© 2026 Atalaya</p>
+
+    </footer>
+
+    <!-- Toast Mensaje -->
+    <section th:fragment="mostrarToast">
+
+        <div class="position-fixed top-50 start-50 translate-middle">
+
+            <div th:if="${error}"
+                 class="alert alert-danger">
+
+                [[${error}]]
+
+            </div>
+
+            <div th:if="${todoOk}"
+                 class="alert alert-success">
+
+                [[${todoOk}]]
+
+            </div>
+
+        </div>
+
+    </section>
+
+</body>
 </html>

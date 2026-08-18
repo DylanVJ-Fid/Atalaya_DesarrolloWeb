@@ -79,9 +79,15 @@
 
                         <td th:text="${usuario.correo}"></td>
 
-                        <td th:text="${usuario.rol != null
-                            ? usuario.rol.nombre
-                            : 'Sin rol'}">
+                        <td>
+                            <span th:if="${usuario.roles != null and !usuario.roles.isEmpty()}"
+                                  th:each="rol : ${usuario.roles}"
+                                  th:text="${rol.nombre + ' '}">
+                            </span>
+
+                            <span th:if="${usuario.roles == null or usuario.roles.isEmpty()}">
+                                Sin rol
+                            </span>
                         </td>
 
                         <td th:text="${usuario.activo

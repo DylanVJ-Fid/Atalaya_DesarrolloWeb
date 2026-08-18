@@ -100,15 +100,11 @@ public class Venta implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
-    // Calcula el subtotal de esta venta
     @Transient
     public BigDecimal getSubtotal() {
         if (precioHistorico == null || cantidad == null) {
             return BigDecimal.ZERO;
         }
-
-        return precioHistorico.multiply(
-                BigDecimal.valueOf(cantidad)
-        );
+        return precioHistorico.multiply(BigDecimal.valueOf(cantidad));
     }
 }

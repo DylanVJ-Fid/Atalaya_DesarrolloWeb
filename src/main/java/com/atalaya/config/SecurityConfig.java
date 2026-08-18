@@ -1,9 +1,10 @@
 package com.atalaya.config;
 
+import com.atalaya.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -11,59 +12,48 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            UsuarioService usuarioService) throws Exception {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/",
-                        "/usuario/login",
-                        "/usuario/registro",
-                        "/usuario/guardar",
-                        "/css/**",
-                        "/js/**",
-                        "/images/**",
-                        "/webjars/**",
-                        "/producto/**"
-                ).permitAll()
-
-                .requestMatchers(
-                        "/usuario/listado",
-                        "/usuario/modificar/**",
-                        "/usuario/actualizar",
-                        "/usuario/eliminar/**",
-                        "/categoria/**"
-                ).hasRole("ADMIN")
-
-                .requestMatchers(
-                        "/carrito/**",
-                        "/factura/**"
-                ).hasAnyRole("USER", "ADMIN")
-
-                .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/usuario/login",
+                                "/usuario/registro",
+                                "/usuario/guardar",
+                                "/usuario/verificar",
+                                "/css/**",
+                                "/js/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        .requestMatchers("/usuario/**").hasRole("ADMIN")
+                        .anyRequest().permitAll()
                 )
 
                 .formLogin(form -> form
-                .loginPage("/usuario/login")
-                .loginProcessingUrl("/login")
-                .usernameParameter("correo")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/producto/", true)
-                .failureUrl("/usuario/login?error=true")
-                .permitAll()
+                        .loginPage("/usuario/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("correo")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/producto/", true)
+                        .failureUrl("/usuario/login?error=true")
+                        .permitAll()
                 )
 
                 .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/usuario/login?logout=true")
-                .permitAll()
-                );
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/usuario/login?logout=true")
+                        .permitAll()
+                )
+
+                .userDetailsService(usuarioService);
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

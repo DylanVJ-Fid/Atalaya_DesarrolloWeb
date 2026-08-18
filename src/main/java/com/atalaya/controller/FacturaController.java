@@ -53,7 +53,6 @@ public class FacturaController {
 
         BigDecimal subtotal = producto.get().getPrecio();
 
-        //cambio final agregado
         cargarTotales(model, subtotal);
 
         model.addAttribute("producto", producto.get());

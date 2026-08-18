@@ -4,7 +4,9 @@ import com.atalaya.domain.Usuario;
 import com.atalaya.repository.UsuarioRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +23,7 @@ public class UsuarioService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
-                          PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -53,11 +55,13 @@ public class UsuarioService implements UserDetailsService {
             usuario.setActivo(true);
         }
 
-        // Solo encripta si la contraseña aún no está codificada
         if (usuario.getPassword() != null
+                && !usuario.getPassword().isBlank()
                 && !usuario.getPassword().startsWith("$2a$")
                 && !usuario.getPassword().startsWith("$2b$")
-                && !usuario.getPassword().startsWith("$2y$")) {
+                && !usuario.getPassword().startsWith("$2y$")
+                && !usuario.getPassword().startsWith("{noop}")
+                && !usuario.getPassword().startsWith("{bcrypt}")) {
 
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
@@ -79,21 +83,22 @@ public class UsuarioService implements UserDetailsService {
 
         if (usuario == null) {
             throw new UsernameNotFoundException(
-                    "Usuario no encontrado: " + correo
-            );
+                    "Usuario no encontrado: " + correo);
         }
 
-        if (usuario.getRol() == null) {
+        if (!Boolean.TRUE.equals(usuario.getActivo())) {
             throw new UsernameNotFoundException(
-                    "El usuario no tiene un rol asignado"
-            );
+                    "El usuario está inactivo: " + correo);
         }
 
-        return User.builder()
-                .username(usuario.getCorreo())
-                .password(usuario.getPassword())
-                .roles(usuario.getRol().getNombre())
-                .disabled(!Boolean.TRUE.equals(usuario.getActivo()))
-                .build();
+        var roles = usuario.getRoles().stream()
+                .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.getNombre()))
+                .collect(Collectors.toSet());
+
+        return new User(
+                usuario.getCorreo(),
+                usuario.getPassword(),
+                roles
+        );
     }
 }

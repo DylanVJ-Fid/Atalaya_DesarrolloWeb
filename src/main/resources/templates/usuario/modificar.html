@@ -47,19 +47,25 @@
                     </small>
                 </div>
 
+                <!-- ROLES -->
                 <div class="col-md-6">
-                    <label class="form-label">Rol</label>
+                    <label class="form-label">Roles</label>
 
-                    <select th:field="*{rol.idRol}"
-                            class="form-select"
-                            required>
+                    <div th:each="rol : ${roles}"
+                         class="form-check">
 
-                        <option th:each="rol : ${roles}"
-                                th:value="${rol.idRol}"
-                                th:text="${rol.nombre}">
-                        </option>
+                        <input type="checkbox"
+                               class="form-check-input"
+                               th:id="${'rol-' + rol.idRol}"
+                               th:value="${rol.idRol}"
+                               th:field="*{roles}" />
 
-                    </select>
+                        <label class="form-check-label"
+                               th:for="${'rol-' + rol.idRol}"
+                               th:text="${rol.nombre}">
+                        </label>
+
+                    </div>
                 </div>
 
                 <div class="col-md-6">
