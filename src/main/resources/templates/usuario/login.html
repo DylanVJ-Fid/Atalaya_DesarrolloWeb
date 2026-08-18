@@ -8,7 +8,24 @@
 
         <section class="bg-success p-2 text-white">
             <div class="container">
-                <h2>Sistema Atalaya</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Sistema Atalaya</h2>
+
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <i class="fa-solid fa-language"></i> [[#{plantilla.idioma}]]
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/usuario/login(lang=es)}">Español</a></li>
+                            <li><a class="dropdown-item" th:href="@{/usuario/login(lang=en)}">English</a></li>
+                            <li><a class="dropdown-item" th:href="@{/usuario/login(lang=fr)}">Français</a></li>
+                            <li><a class="dropdown-item" th:href="@{/usuario/login(lang=pt)}">Português</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </section>
 
