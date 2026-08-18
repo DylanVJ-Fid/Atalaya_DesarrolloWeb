@@ -170,7 +170,7 @@ public class FacturaService {
                 producto.getExistencias() - cantidad
         );
 
-        productoService.guardar(producto);
+        productoService.guardar(producto, null);
     }
 
     private void validarProductoDisponible(

@@ -1,7 +1,9 @@
 package com.atalaya.controller;
 
+import com.atalaya.domain.Categoria;
 import com.atalaya.service.CategoriaService;
 import com.atalaya.service.ProductoService;
+import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,7 +48,7 @@ public class IndexController {
         Optional<Categoria> categoriaOpt = categoriaService.getCategoria(idCategoria);
 
         if (categoriaOpt.isEmpty()) {
-            model.addAttribute("productos", java.util.Collections.EMPTY_LIST);
+            model.addAttribute("productos", java.util.Collections.emptyList());
         } else {
             var categoria = categoriaOpt.get();
             var productos = categoria.getProductos();
