@@ -3,7 +3,6 @@ package com.atalaya.service;
 import com.atalaya.domain.Usuario;
 import com.atalaya.repository.UsuarioRepository;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -15,17 +14,17 @@ public class RegistroService {
     private final UsuarioRepository usuarioRepository;
     private final CorreoService correoService;
     private final UsuarioService usuarioService;
-    private final String servidorHttp;
+    private final ConstanteService constanteService;
 
     public RegistroService(UsuarioRepository usuarioRepository,
             CorreoService correoService,
             UsuarioService usuarioService,
-            @Value("${servidor.http}") String servidorHttp) {
+            ConstanteService constanteService) {
 
         this.usuarioRepository = usuarioRepository;
         this.correoService = correoService;
         this.usuarioService = usuarioService;
-        this.servidorHttp = servidorHttp;
+        this.constanteService = constanteService;
     }
 
     //cambio final agregado
@@ -38,6 +37,11 @@ public class RegistroService {
         usuario.setActivo(false);
 
         usuarioRepository.save(usuario);
+
+        String servidorHttp = constanteService.getValor(
+                "servidor.http",
+                "http://localhost:8080"
+        );
 
         String enlace = UriComponentsBuilder.fromUriString(servidorHttp)
                 .pathSegment("registro", "activacion", usuario.getCorreo(), claveActivacion)

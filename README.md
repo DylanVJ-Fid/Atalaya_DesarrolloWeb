@@ -50,10 +50,7 @@ Atalaya es una tienda virtual desarrollada con Java y Spring Boot. Permite admin
    DB_PASSWORD=contraseña_mysql
    MAIL_USERNAME=correo_emisor
    MAIL_PASSWORD=contraseña_de_aplicacion
-   MAIL_HOST=smtp.gmail.com
-   MAIL_PORT=587
    MAIL_FROM=correo_emisor
-   APP_BASE_URL=http://localhost:8080
    ```
 
 4. Ejecutar la aplicación:
@@ -113,7 +110,7 @@ DB_PASSWORD=contraseña_de_Aiven
 
 ## Modelo de datos
 
-El script contiene 10 tablas; por lo tanto, supera el mínimo solicitado de 8:
+El script contiene 11 tablas; por lo tanto, supera el mínimo solicitado de 8:
 
 | Tabla | Propósito |
 | --- | --- |
@@ -125,6 +122,7 @@ El script contiene 10 tablas; por lo tanto, supera el mínimo solicitado de 8:
 | `rol` | Roles de autorización. |
 | `usuario_rol` | Relación de muchos a muchos entre usuarios y roles. |
 | `ruta` | Rutas y requisito de autorización. |
+| `constante` | Valores públicos configurables de la aplicación. |
 | `factura` | Encabezado de una compra confirmada. |
 | `venta` | Detalle transaccional de productos comprados. |
 
@@ -184,16 +182,19 @@ DB_USERNAME=avnadmin
 DB_PASSWORD=contraseña_de_Aiven
 MAIL_USERNAME=correo_emisor
 MAIL_PASSWORD=contraseña_de_aplicacion_de_Gmail
-MAIL_HOST=smtp.mailersend.net
-MAIL_PORT=2525
-MAIL_FROM=remitente_en_dominio_verificado
-APP_BASE_URL=https://nombre-del-servicio.onrender.com
+MAIL_FROM=correo_emisor
 SPRING_PROFILES_ACTIVE=default
 ```
 
-`APP_BASE_URL` es indispensable para que el correo genere un enlace público de activación y no uno dirigido a `localhost`.
+El enlace de activación se construye con el valor `servidor.http` de la tabla `constante`. Para desarrollo se utiliza `http://localhost:8080`; en una base destinada a producción se debe actualizar con la URL pública del servicio.
 
-En una instancia gratuita de Render se debe utilizar el puerto alternativo `2525` de MailerSend, porque Render bloquea la salida SMTP por los puertos 25, 465 y 587. `MAIL_FROM` debe pertenecer al dominio verificado en MailerSend y no debe confundirse con el nombre de usuario SMTP.
+```sql
+UPDATE constante
+SET valor = 'https://atalaya-desarrolloweb-gljc.onrender.com'
+WHERE atributo = 'servidor.http';
+```
+
+Atalaya utiliza Gmail mediante TLS y el puerto 587. Esto funciona localmente con una contraseña de aplicación. Las instancias gratuitas de Render bloquean la salida por el puerto 587, por lo que Gmail requiere una instancia pagada o un proveedor accesible mediante HTTPS/otro puerto.
 
 ## Firebase Storage
 
@@ -252,7 +253,7 @@ src/main/resources
 
 - [x] README actualizado.
 - [x] Instrucciones para crear y poblar la base de datos.
-- [x] Mínimo de 8 tablas: el proyecto define 10.
+- [x] Mínimo de 8 tablas: el proyecto define 11.
 - [x] Tablas transaccionales: `factura` y `venta`.
 - [x] Código adicional: procesamiento asíncrono de correos.
 - [ ] Agregar el enlace compartido del artículo IEEE.

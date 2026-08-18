@@ -81,6 +81,17 @@ CREATE TABLE ruta (
     requiere_rol BOOLEAN
 );
 
+-- TABLA: CONSTANTE
+CREATE TABLE constante (
+    id_constante INT AUTO_INCREMENT NOT NULL,
+    atributo VARCHAR(25) NOT NULL,
+    valor VARCHAR(150) NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_constante),
+    UNIQUE (atributo)
+) ENGINE = InnoDB;
+
 -- TABLA TRANSACCIONAL: FACTURA
 CREATE TABLE factura (
     id_factura BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -106,6 +117,20 @@ CREATE TABLE venta (
     FOREIGN KEY (id_factura) REFERENCES factura(id_factura),
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
+
+-- INSERT: CONSTANTES PUBLICAS DE LA APLICACION
+-- Los secretos y contrasenas deben permanecer en variables de entorno.
+INSERT INTO constante (atributo, valor) VALUES
+('dominio', 'localhost'),
+('dolar', '520.75'),
+('paypal.mode', 'sandbox'),
+('servidor.http', 'http://localhost:8080'),
+('url_paypal_cancel', 'http://localhost/payment/cancel'),
+('url_paypal_success', 'http://localhost/payment/success'),
+('app.paypal.return-url', '/paypal/order/capture'),
+('app.paypal.cancel-url', '/paypal/pago_cancel'),
+('app.paypal.cancel-error', '/paypal/pago_error'),
+('app.paypal.cancel-success', '/paypal/pago_success');
 
 -- INSERT: CATEGORÍAS
 INSERT INTO categoria (descripcion, ruta_imagen, activo) VALUES 

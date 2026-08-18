@@ -1,17 +1,19 @@
 package com.atalaya.service;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailPreparationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //cambio final agregado
 @Service
 public class CorreoService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CorreoService.class);
 
     private final JavaMailSender mailSender;
     private final String remitente;
@@ -38,8 +40,8 @@ public class CorreoService {
             correo.setText(contenido, true);
 
             mailSender.send(mensaje);
-        } catch (MessagingException e) {
-            throw new MailPreparationException("No se pudo preparar el correo de activación", e);
+        } catch (Exception e) {
+            LOGGER.warn("No se pudo enviar el correo de activación a {}: {}", para, e.getMessage());
         }
     }
 }
