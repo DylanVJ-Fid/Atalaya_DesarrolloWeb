@@ -48,9 +48,8 @@ Atalaya es una tienda virtual desarrollada con Java y Spring Boot. Permite admin
    DB_URL=jdbc:mysql://localhost:3306/atalaya
    DB_USERNAME=root
    DB_PASSWORD=contraseña_mysql
-   MAIL_USERNAME=correo_emisor
-   MAIL_PASSWORD=contraseña_de_aplicacion
-   MAIL_FROM=correo_emisor
+   MAILERSEND_API_TOKEN=token_de_mailersend
+   MAIL_FROM=correo_de_dominio_verificado
    ```
 
 4. Ejecutar la aplicación:
@@ -180,9 +179,8 @@ El `Dockerfile` compila con Maven y ejecuta la aplicación sobre Java 21. En el 
 DB_URL=jdbc:mysql://HOST_AIVEN:PUERTO/defaultdb?sslMode=REQUIRED&allowPublicKeyRetrieval=true
 DB_USERNAME=avnadmin
 DB_PASSWORD=contraseña_de_Aiven
-MAIL_USERNAME=correo_emisor
-MAIL_PASSWORD=contraseña_de_aplicacion_de_Gmail
-MAIL_FROM=correo_emisor
+MAILERSEND_API_TOKEN=token_de_mailersend
+MAIL_FROM=correo_de_dominio_verificado
 SPRING_PROFILES_ACTIVE=default
 ```
 
