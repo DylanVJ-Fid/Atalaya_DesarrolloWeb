@@ -3,8 +3,10 @@ package com.atalaya.service;
 import com.atalaya.domain.Usuario;
 import com.atalaya.repository.UsuarioRepository;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
 
 //cambio final agregado
 @Service
@@ -13,14 +15,17 @@ public class RegistroService {
     private final UsuarioRepository usuarioRepository;
     private final CorreoService correoService;
     private final UsuarioService usuarioService;
+    private final String servidorHttp;
 
     public RegistroService(UsuarioRepository usuarioRepository,
             CorreoService correoService,
-            UsuarioService usuarioService) {
+            UsuarioService usuarioService,
+            @Value("${servidor.http}") String servidorHttp) {
 
         this.usuarioRepository = usuarioRepository;
         this.correoService = correoService;
         this.usuarioService = usuarioService;
+        this.servidorHttp = servidorHttp;
     }
 
     //cambio final agregado
@@ -34,8 +39,11 @@ public class RegistroService {
 
         usuarioRepository.save(usuario);
 
-        String enlace = "http://localhost:8080/registro/activacion/"
-                + usuario.getCorreo() + "/" + claveActivacion;
+        String enlace = UriComponentsBuilder.fromUriString(servidorHttp)
+                .pathSegment("registro", "activacion", usuario.getCorreo(), claveActivacion)
+                .build()
+                .encode()
+                .toUriString();
 
         String contenido = """
                 <h2>Bienvenido a Atalaya</h2>
@@ -46,16 +54,11 @@ public class RegistroService {
                 </p>
                 """.formatted(enlace);
 
-        try {
-            correoService.enviarCorreoHtml(
-                    usuario.getCorreo(),
-                    "Activación de cuenta - Atalaya",
-                    contenido
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "No se pudo enviar el correo de activación", e);
-        }
+        correoService.enviarCorreoHtml(
+                usuario.getCorreo(),
+                "Activación de cuenta - Atalaya",
+                contenido
+        );
     }
 
     //cambio final agregado

@@ -81,6 +81,32 @@ CREATE TABLE ruta (
     requiere_rol BOOLEAN
 );
 
+-- TABLA TRANSACCIONAL: FACTURA
+CREATE TABLE factura (
+    id_factura BIGINT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATETIME,
+    total DECIMAL(12,2),
+    estado VARCHAR(20),
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME,
+    nombre_factura VARCHAR(150),
+    correo VARCHAR(150),
+    direccion VARCHAR(255)
+);
+
+-- TABLA TRANSACCIONAL: VENTA (DETALLE DE LA FACTURA)
+CREATE TABLE venta (
+    id_venta BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_factura BIGINT NOT NULL,
+    id_producto INT NOT NULL,
+    precio_historico DECIMAL(12,2) NOT NULL,
+    cantidad INT NOT NULL,
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (id_factura) REFERENCES factura(id_factura),
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+);
+
 -- INSERT: CATEGORÍAS
 INSERT INTO categoria (descripcion, ruta_imagen, activo) VALUES 
 ('Monitores', 'https://cyberteamcr.com/wp-content/uploads/2023/11/MONITOR-SAMSUNG-LF27T350FHNXZA.jpg', true),

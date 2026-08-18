@@ -23,6 +23,8 @@ public class SecurityConfig {
                                 "/usuario/registro",
                                 "/usuario/guardar",
                                 "/usuario/verificar",
+                                "/registro/activacion/**",
+                                "/registro/activar",
                                 "/css/**",
                                 "/js/**",
                                 "/webjars/**"

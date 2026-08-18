@@ -1,289 +1,259 @@
-# Atalaya - Sistema de Comercio Electronico
+# Atalaya — Sistema de comercio electrónico
 
-Atalaya es una aplicacion web de comercio electronico desarrollada con Spring Boot. El proyecto permite administrar productos, categorias, usuarios, carrito de compras y pedidos desde una interfaz web con Thymeleaf y Bootstrap.
+Atalaya es una tienda virtual desarrollada con Java y Spring Boot. Permite administrar categorías, productos, usuarios y roles; consultar el catálogo; utilizar un carrito de compras; confirmar pedidos y consultar el historial de facturas.
 
-Este README es preliminar y resume el estado actual del avance del proyecto.
+## Estado del proyecto
 
-## Historias de usuario por persona
+- Catálogo y detalle de productos.
+- CRUD de productos, categorías y usuarios.
+- Registro, activación por correo, autenticación y autorización con Spring Security.
+- Carrito con control de cantidades, existencias, subtotales y total.
+- Checkout individual y desde el carrito.
+- Registro transaccional mediante facturas y ventas.
+- Historial y detalle de pedidos.
+- Persistencia MySQL local o en Aiven.
+- Despliegue mediante Docker en Render.
+- Configuración preparada para Firebase Storage.
 
-### Persona 1 - Autenticacion y usuarios
+## Tecnologías
 
-Responsable de:
+- Java 21.
+- Spring Boot 3.5.16.
+- Spring Web, Spring Data JPA, Spring Security y Spring Mail.
+- Hibernate y MySQL.
+- Thymeleaf, Bootstrap 5, Font Awesome y jQuery.
+- Maven y Docker.
 
-- Registro de usuario (HU01).
-- Login (HU02).
-- Roles (HU19).
-- CRUD basico de usuarios.
-
-Debe hacer:
-
-- `Usuario` y `Rol` como entidades.
-- `UsuarioRepository`.
-- `UsuarioService`.
-- `UsuarioController`.
-- Vistas de login y registro.
-
-Estado actual:
-
-- El proyecto ya cuenta con entidades `Usuario` y `Rol`.
-- Existe repositorio, servicio y controlador para usuarios.
-- Existen vistas de login, registro, listado y modificacion de usuarios.
-- El login es basico y valida correo/contrasena contra la base de datos.
-
-Importancia:
-
-- Es critico para todo el sistema porque permite identificar usuarios y preparar la proteccion de las secciones administrativas.
-
-### Persona 2 - Productos y categorias
-
-Responsable de:
-
-- Ver productos (HU04).
-- Detalle de producto (HU07).
-- CRUD de productos (HU14, HU15, HU16).
-- Categorias (HU17).
-
-Debe hacer:
-
-- `Producto` y `Categoria` como entidades.
-- CRUD completo de productos.
-- CRUD de categorias.
-- Listado con Bootstrap.
-- Filtros basicos.
-
-Estado actual:
-
-- El proyecto ya cuenta con entidades `Producto` y `Categoria`.
-- Existe listado publico de productos.
-- Existe detalle de producto.
-- Existe CRUD de productos y categorias.
-- Hay filtros por categoria y consulta por rango de precio.
-
-Importancia:
-
-- Es el nucleo visual del sistema porque representa el catalogo que ve el usuario.
-
-### Persona 3 - Carrito de compras
-
-Responsable de:
-
-- Agregar producto al carrito (HU08).
-- Modificar cantidad (HU09).
-- Eliminar producto del carrito (HU10).
-
-Debe hacer:
-
-- `Carrito`.
-- `DetalleCarrito`.
-- Logica para sumar y restar productos.
-- Vista del carrito.
-- Calculo del total.
-
-Estado actual:
-
-- El proyecto ya cuenta con `Carrito` y `DetalleCarrito`.
-- Se pueden agregar productos al carrito.
-- Se pueden sumar, restar, actualizar y eliminar productos.
-- Se calcula el total del carrito.
-- Existe vista del carrito.
-
-Importancia:
-
-- Este modulo tiene logica importante porque conecta el catalogo con el proceso de compra.
-
-### Persona 4 - Pedidos y pagos
-
-Responsable de:
-
-- Confirmar compra (HU11).
-- Historial de pedidos (HU12).
-- Pago basico opcional.
-
-Debe hacer:
-
-- Pedido o factura.
-- Detalle del pedido o venta.
-- Pago basico.
-- Generar pedido desde carrito.
-- Guardar en base de datos.
-- Mostrar historial.
-
-Estado actual:
-
-- El proyecto usa `Factura` para representar pedidos.
-- El proyecto usa `Venta` para representar el detalle de productos comprados.
-- Existe checkout individual.
-- Existe checkout desde carrito.
-- Se guarda la factura en base de datos.
-- Se guarda el detalle de ventas por factura.
-- Existe historial de pedidos con detalle.
-- El pago es basico y funciona como formulario visual.
-
-Importancia:
-
-- Este modulo conecta todo el sistema: productos, carrito, compras e historial.
-
-## Tecnologias
-
-- Java 21
-- Spring Boot 3.5.16
-- Spring Web
-- Spring Data JPA / Hibernate
-- Thymeleaf
-- Bootstrap 5
-- Font Awesome
-- jQuery
-- MySQL
-- Maven
-
-## Modulos implementados
-
-### Productos y categorias
-
-- CRUD de productos.
-- CRUD de categorias.
-- Listado publico de productos activos.
-- Filtro por categoria.
-- Consulta de productos por rango de precio.
-- Manejo de imagen, precio, existencias y estado activo.
-
-### Carrito de compras
-
-- Agregar productos al carrito.
-- Aumentar, reducir y actualizar cantidades.
-- Eliminar productos del carrito.
-- Vaciar carrito.
-- Calculo de subtotal por producto y total del carrito.
-- Compra completa desde el carrito.
-
-### Pedidos e historial
-
-- Checkout individual desde un producto.
-- Checkout de carrito completo.
-- Calculo de subtotal, IVA 13% y total.
-- Registro de factura.
-- Registro de ventas por producto dentro de cada factura.
-- Descuento de existencias al confirmar la compra.
-- Historial de pedidos con detalle de productos comprados.
-
-### Usuarios y roles
-
-- Entidades `Usuario` y `Rol`.
-- Repositorios, servicios y controlador de usuarios.
-- Registro de usuarios.
-- Login basico por correo y contrasena.
-- CRUD basico de usuarios.
-- Accesos de usuarios desde el menu principal.
-
-> Nota: el login actual es funcional pero basico. Todavia no usa Spring Security, sesiones reales, logout ni contrasenas encriptadas.
-
-## Requisitos de ejecucion
+## Requisitos
 
 - JDK 21 o superior.
 - Maven 3.9 o superior.
-- MySQL 8 o compatible.
-- Una base de datos llamada `atalaya` para ejecucion local, o una base externa compatible como Aiven MySQL.
+- MySQL 8 o una instancia compatible como Aiven MySQL.
+- Git.
 
-## Configuracion de base de datos
+## Instalación rápida
 
-La aplicacion usa variables de entorno para permitir ejecucion local y despliegue en Render/Aiven.
+1. Clonar el repositorio:
 
-Valores principales:
+   ```bash
+   git clone https://github.com/DylanVJ-Fid/Atalaya_DesarrolloWeb.git
+   cd Atalaya_DesarrolloWeb
+   ```
 
-```properties
-DB_URL=jdbc:mysql://localhost:3306/atalaya
-DB_USERNAME=root
-DB_PASSWORD=tu_password
-```
+2. Crear y poblar la base de datos siguiendo la sección siguiente.
 
-Si no se configuran variables, la aplicacion intenta usar:
+3. Definir las variables de entorno:
 
-```properties
-jdbc:mysql://localhost:3306/atalaya
-usuario: root
-password: vacio
-```
+   ```text
+   DB_URL=jdbc:mysql://localhost:3306/atalaya
+   DB_USERNAME=root
+   DB_PASSWORD=contraseña_mysql
+   MAIL_USERNAME=correo_emisor
+   MAIL_PASSWORD=contraseña_de_aplicacion
+   APP_BASE_URL=http://localhost:8080
+   ```
 
-Para Aiven, el `DB_URL` debe tener formato similar a:
+4. Ejecutar la aplicación:
 
-```properties
-jdbc:mysql://HOST_AIVEN:PUERTO/defaultdb?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
-```
+   ```bash
+   mvn spring-boot:run
+   ```
 
-## Ejecucion local
+5. Abrir `http://localhost:8080/`.
 
-Desde la raiz del proyecto:
+Las credenciales nunca deben guardarse en Git. Para desarrollo local se puede crear `src/main/resources/application-local.properties`; este archivo está excluido mediante `.gitignore`.
+
+## Creación y población de la base de datos
+
+El archivo [`Tabla Atalaya.sql`](./Tabla%20Atalaya.sql) crea la base `atalaya`, genera sus tablas, relaciones y datos iniciales. Incluye categorías, productos, usuarios, roles y permisos de ejemplo.
+
+> **Advertencia:** el script comienza con `DROP DATABASE IF EXISTS atalaya`; al ejecutarlo elimina cualquier base local anterior con ese nombre y vuelve a crearla.
+
+### Opción A: MySQL Workbench
+
+1. Iniciar MySQL y abrir MySQL Workbench.
+2. Conectarse al servidor local.
+3. Seleccionar **File > Open SQL Script**.
+4. Abrir `Tabla Atalaya.sql`.
+5. Ejecutar todo el script con el botón del rayo.
+6. Actualizar la lista de esquemas y verificar la base `atalaya`.
+
+### Opción B: terminal de MySQL
+
+Desde la raíz del proyecto:
 
 ```bash
-mvn spring-boot:run
+mysql -u root -p < "Tabla Atalaya.sql"
 ```
 
-O para compilar sin ejecutar pruebas:
+Después se puede validar la instalación:
 
-```bash
-mvn -DskipTests compile
+```sql
+USE atalaya;
+SHOW TABLES;
+SELECT COUNT(*) AS categorias FROM categoria;
+SELECT COUNT(*) AS productos FROM producto;
+SELECT COUNT(*) AS usuarios FROM usuario;
 ```
 
-La aplicacion queda disponible por defecto en:
+### Uso con Aiven
+
+La instancia administrada normalmente utiliza una base existente como `defaultdb`. En ese caso no se deben ejecutar las instrucciones `DROP DATABASE`, `CREATE DATABASE` y `USE atalaya`. Se debe seleccionar `defaultdb` en el cliente SQL y ejecutar desde la primera sentencia `CREATE TABLE`.
+
+La conexión de Spring se configura así:
 
 ```text
-http://localhost:8080/producto
+DB_URL=jdbc:mysql://HOST:PUERTO/defaultdb?sslMode=REQUIRED&allowPublicKeyRetrieval=true
+DB_USERNAME=avnadmin
+DB_PASSWORD=contraseña_de_Aiven
 ```
+
+## Modelo de datos
+
+El script contiene 10 tablas; por lo tanto, supera el mínimo solicitado de 8:
+
+| Tabla | Propósito |
+| --- | --- |
+| `categoria` | Clasificación de productos. |
+| `producto` | Catálogo, precios y existencias. |
+| `carrito` | Encabezado del carrito activo. |
+| `detalle_carrito` | Productos y cantidades del carrito. |
+| `usuario` | Cuentas registradas. |
+| `rol` | Roles de autorización. |
+| `usuario_rol` | Relación de muchos a muchos entre usuarios y roles. |
+| `ruta` | Rutas y requisito de autorización. |
+| `factura` | Encabezado de una compra confirmada. |
+| `venta` | Detalle transaccional de productos comprados. |
+
+`factura` y `venta` registran transacciones reales del sistema. Cada compra conserva fecha, total, estado, datos de facturación, producto, cantidad y precio histórico. De esta forma, un cambio posterior en el precio del catálogo no altera la compra registrada.
+
+## Funcionalidades por módulo
+
+### Usuarios y seguridad
+
+- Registro de usuarios (HU01).
+- Inicio y cierre de sesión (HU02).
+- Roles y protección de pantallas administrativas (HU19).
+- Activación de cuenta mediante correo.
+- Contraseñas codificadas mediante Spring Security.
+
+### Productos y categorías
+
+- Catálogo y filtros (HU04).
+- Detalle de producto (HU07).
+- CRUD de productos (HU14, HU15 y HU16).
+- Administración de categorías (HU17).
+
+### Carrito
+
+- Agregar productos (HU08).
+- Modificar cantidades sin superar existencias (HU09).
+- Eliminar productos (HU10).
+- Vaciar carrito y calcular subtotales y total.
+
+### Pedidos
+
+- Confirmar compra (HU11).
+- Consultar historial y detalle (HU12).
+- Calcular subtotal, IVA del 13 % y total.
+- Descontar existencias al confirmar la compra.
+
+## Código adicional no visto en clase
+
+El proyecto incorpora procesamiento asíncrono para el correo de activación mediante `@EnableAsync`, `@Async` y un `ThreadPoolTaskExecutor` dedicado.
+
+En el flujo anterior, la petición HTTP esperaba a que Gmail terminara DNS, conexión, TLS, autenticación y envío SMTP. En Render esa operación podía congelar visualmente el registro. Ahora el flujo es:
+
+1. Guardar el usuario inactivo y generar su token.
+2. Enviar la tarea de correo a `correoExecutor`.
+3. Redirigir inmediatamente a la pantalla de verificación.
+4. Procesar el correo en segundo plano con timeouts de 5 segundos.
+
+El ejecutor utiliza entre uno y dos hilos y una cola de 50 tareas. Esto evita crear hilos sin límite y mantiene aislado el trabajo SMTP del hilo que responde al navegador.
 
 ## Despliegue en Render
 
-El proyecto incluye `Dockerfile`, por lo que puede desplegarse en Render como Web Service usando Docker.
-
-Variables recomendadas en Render:
+El `Dockerfile` compila con Maven y ejecuta la aplicación sobre Java 21. En el Web Service se deben configurar:
 
 ```text
-PORT=<asignado por Render>
-DB_URL=jdbc:mysql://HOST_AIVEN:PUERTO/defaultdb?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
+DB_URL=jdbc:mysql://HOST_AIVEN:PUERTO/defaultdb?sslMode=REQUIRED&allowPublicKeyRetrieval=true
 DB_USERNAME=avnadmin
-DB_PASSWORD=<password de Aiven>
+DB_PASSWORD=contraseña_de_Aiven
+MAIL_USERNAME=correo_emisor
+MAIL_PASSWORD=contraseña_de_aplicacion_de_Gmail
+APP_BASE_URL=https://nombre-del-servicio.onrender.com
+SPRING_PROFILES_ACTIVE=default
 ```
 
-La aplicacion usa `server.port=${PORT:8080}`, por lo que respeta el puerto asignado por Render.
+`APP_BASE_URL` es indispensable para que el correo genere un enlace público de activación y no uno dirigido a `localhost`.
+
+## Firebase Storage
+
+La configuración utiliza:
+
+```properties
+firebase.bucket.name=atalaya-65141.firebasestorage.app
+firebase.storage.path=atalaya
+firebase.json.path=firebase
+firebase.json.file=atalaya-65141-firebase-adminsdk-fbsvc-5c3535b580.json
+```
+
+El archivo JSON contiene una llave privada y está excluido del repositorio. Debe suministrarse de forma segura en cada ambiente. Las propiedades por sí solas no inicializan Firebase; se requiere la dependencia Firebase Admin y una clase de configuración antes de utilizar Storage desde el código.
+
+## Internacionalización
+
+La interfaz actual está redactada en español. Si el requisito académico exige internacionalización técnica con cambio de idioma, todavía se deben añadir archivos `messages_es.properties`, `messages_en.properties`, un `LocaleResolver` y un selector de idioma. No se marca como finalizada hasta comprobar ese comportamiento.
+
+## Artículo científico IEEE
+
+Documento colaborativo para edición del equipo:
+
+- **Enlace compartido:** _pendiente de agregar por el equipo_.
+- **Estado:** en elaboración.
+- **Entrega final:** exportar y entregar en PDF cuando contenido, referencias y formato IEEE hayan sido revisados.
+
+### Análisis de oferta de mercado
+
+Atalaya participa en el mercado de comercio electrónico de equipo tecnológico. La oferta existente puede agruparse en tres tipos:
+
+| Tipo de competidor | Fortalezas | Oportunidad para Atalaya |
+| --- | --- | --- |
+| Grandes marketplaces | Catálogo amplio, reconocimiento y logística. | Experiencia más simple y catálogo especializado. |
+| Tiendas tecnológicas nacionales | Soporte local, garantía y disponibilidad inmediata. | Comparación clara, compra digital y seguimiento centralizado. |
+| Venta por redes sociales | Atención directa y costos operativos bajos. | Mayor formalidad mediante cuentas, inventario, carrito y comprobante. |
+
+La propuesta de Atalaya se diferencia por integrar catálogo especializado, existencias, carrito, seguridad por roles, activación de cuentas e historial transaccional en una sola aplicación. Para defender el análisis ante el profesor conviene explicar que el proyecto no busca competir por tamaño con un marketplace global; busca digitalizar de manera trazable el proceso de una tienda tecnológica local.
 
 ## Estructura principal
 
 ```text
 src/main/java/com/atalaya
-├── controller
-├── domain
-├── repository
-└── service
+|-- config
+|-- controller
+|-- domain
+|-- repository
+`-- service
 
-src/main/resources/templates
-├── carrito
-├── categoria
-├── consultas
-├── factura
-├── general
-├── producto
-└── usuario
+src/main/resources
+|-- templates
+|-- application.properties
+`-- firebase (credencial local no publicada)
 ```
 
-## Estado del avance
+## Validación académica
 
-Completado o funcional a nivel preliminar:
+- [x] README actualizado.
+- [x] Instrucciones para crear y poblar la base de datos.
+- [x] Mínimo de 8 tablas: el proyecto define 10.
+- [x] Tablas transaccionales: `factura` y `venta`.
+- [x] Código adicional: procesamiento asíncrono de correos.
+- [ ] Agregar el enlace compartido del artículo IEEE.
+- [ ] Finalizar y entregar el artículo científico.
+- [ ] Confirmar internacionalización técnica en al menos dos idiomas.
 
-- Catalogo de productos.
-- Administracion de productos y categorias.
-- Carrito de compras.
-- Compra individual y compra desde carrito.
-- Historial de pedidos con detalle.
-- Registro, login basico y CRUD de usuarios.
-- Configuracion preparada para MySQL local o Aiven.
-- Dockerfile para despliegue.
+## Recomendaciones de seguridad
 
-Pendiente o recomendado para siguientes iteraciones:
-
-- Integrar Spring Security.
-- Encriptar contrasenas.
-- Manejar sesiones de usuario y logout.
-- Asociar pedidos a usuarios autenticados.
-- Validar roles para proteger pantallas administrativas.
-- Mejorar manejo de errores y mensajes al usuario.
-- Agregar pruebas automatizadas.
-- Revisar datos iniciales y script SQL segun el modelo actual de JPA.
+- No publicar contraseñas, tokens ni el JSON de Firebase.
+- Configurar secretos mediante variables de entorno en Render.
+- Rotar cualquier credencial que haya sido expuesta anteriormente.
+- Mantener `application-local.properties` únicamente en cada computadora de desarrollo.
