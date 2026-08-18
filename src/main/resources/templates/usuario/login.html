@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body>
+
+        <section class="bg-success p-2 text-white">
+            <div class="container">
+                <h2>Sistema Atalaya</h2>
+            </div>
+        </section>
+
+        <div class="container mt-5" style="max-width:450px;">
+
+            <h2 class="text-center mb-4">Iniciar Sesión</h2>
+
+            <!-- Credenciales incorrectas -->
+            <div th:if="${param.error}"
+                 class="alert alert-danger"
+                 role="alert">
+                Correo o contraseña incorrectos.
+            </div>
+
+            <!-- Logout exitoso -->
+            <div th:if="${param.logout}"
+                 class="alert alert-success"
+                 role="alert">
+                Sesión cerrada correctamente.
+            </div>
+
+            <!-- Registro exitoso -->
+            <div th:if="${param.registro}"
+                 class="alert alert-success"
+                 role="alert">
+                Usuario registrado correctamente. Ya puedes iniciar sesión.
+            </div>
+
+            <!-- Spring Security procesa este formulario -->
+            <form th:action="@{/login}" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+
+                    <input type="email"
+                           name="correo"
+                           class="form-control"
+                           placeholder="correo@ejemplo.com"
+                           required
+                           autofocus />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           required />
+                </div>
+
+                <button class="btn btn-primary w-100"
+                        type="submit">
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <div class="text-center mt-3">
+                <p>¿No tienes una cuenta?</p>
+
+                <a th:href="@{/usuario/registro}"
+                   class="btn btn-outline-success w-100">
+                    Registrarse
+                </a>
+            </div>
+
+        </div>
+
+    </body>
+</html>

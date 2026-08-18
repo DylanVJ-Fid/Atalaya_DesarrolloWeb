@@ -40,10 +40,18 @@ public class IndexController {
     }
 
     @GetMapping("/consultas/{idCategoria}")
-    public String listado(@PathVariable("idCategoria") Integer idCategoria, Model model) {
+    public String listado(@PathVariable("idCategoria") Integer idCategoria,
+            Model model) {
 
-        var productos = productoService.filtrar(null, idCategoria);
-        model.addAttribute("productos", productos);
+        Optional<Categoria> categoriaOpt = categoriaService.getCategoria(idCategoria);
+
+        if (categoriaOpt.isEmpty()) {
+            model.addAttribute("productos", java.util.Collections.EMPTY_LIST);
+        } else {
+            var categoria = categoriaOpt.get();
+            var productos = categoria.getProductos();
+            model.addAttribute("productos", productos);
+        }
 
         var categorias = categoriaService.getCategorias(true);
         model.addAttribute("categorias", categorias);

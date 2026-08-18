@@ -19,6 +19,16 @@
 
             <a class="btn btn-primary" th:href="@{/producto/listado}">Volver</a>
 
+            <form th:if="${producto.activo == true and producto.existencias > 0}"
+                  th:action="@{/carrito/agregar/}+${producto.idProducto}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    Agregar al carrito
+                </button>
+            </form>
+
         </div>
 
         <footer th:replace="~{general/fragmentos :: footer}"></footer>
